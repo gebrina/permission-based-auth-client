@@ -11,12 +11,12 @@ import { ResetPassword } from "./pages/ResetPassword";
 
 export const App = () => {
   return (
-    <div className="container overflow-hidden  flex flex-col gap-8 mx-auto  h-full w-full">
-      <div className="h-12">
-        <Navbar />
-      </div>
-      <div className="flex-1">
-        <BrowserRouter>
+    <div className="container overflow-hidden  flex  flex-col gap-8 mx-auto  h-full w-full">
+      <BrowserRouter>
+        <div className="h-12">
+          <Navbar />
+        </div>
+        <div className="flex-1">
           <Routes>
             <Route path="" element={<Products />} />
             <Route path="login" element={<Login />} />
@@ -26,8 +26,8 @@ export const App = () => {
             <Route path="reset-password/:email" element={<ResetPassword />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </BrowserRouter>
-      </div>
+        </div>
+      </BrowserRouter>
       <div className="h-12">
         <Footer />
       </div>
