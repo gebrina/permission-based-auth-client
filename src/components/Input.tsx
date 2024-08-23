@@ -15,6 +15,7 @@ export const Input: FC<TInputProps> = ({ label, type, name, onChange }) => {
     <div className="flex flex-col gap-2  text-lg ">
       <label htmlFor={inputId}>{label}</label>
       <input
+        autoComplete="off"
         className="border-none rounded outline-none bg-transparent
          shadow-sm
          shadow-slate-700

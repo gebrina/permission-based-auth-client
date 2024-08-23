@@ -11,7 +11,7 @@ import { ResetPassword } from "./pages/ResetPassword";
 
 export const App = () => {
   return (
-    <div className="container overflow-hidden  flex  flex-col gap-8 mx-auto  h-full w-full">
+    <div className="sm:container overflow-hidden  flex  flex-col gap-8 mx-auto  h-full w-full">
       <BrowserRouter>
         <div className="h-12">
           <Navbar />
