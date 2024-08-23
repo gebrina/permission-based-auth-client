@@ -3,17 +3,29 @@ import { ChangeEvent, FC, useId } from "react";
 type TInputProps = {
   label: string;
   type: string;
-  value: string;
+  name: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  errorMessage?: string;
 };
 
-export const Input: FC<TInputProps> = ({ label, type, value, onChange }) => {
+export const Input: FC<TInputProps> = ({ label, type, name, onChange }) => {
   const inputId = useId();
 
   return (
-    <div>
-      <label htmlFor={inputId}></label>
-      <input id={inputId} type={type} value={value} onChange={onChange} />
+    <div className="flex flex-col gap-2  text-lg ">
+      <label htmlFor={inputId}>{label}</label>
+      <input
+        className="border-none rounded outline-none bg-transparent
+         shadow-sm
+         shadow-slate-700
+         py-1
+         px-3
+        "
+        id={inputId}
+        type={type}
+        name={name}
+        onChange={onChange}
+      />
     </div>
   );
 };

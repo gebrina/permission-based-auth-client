@@ -8,26 +8,28 @@ export const Login = () => {
     email: "",
   };
 
-  const { handleChange, errors, values, handleSubmit } = useFormik({
+  const { handleChange, errors, handleSubmit } = useFormik({
     initialValues,
-    onSubmit: () => {},
+    onSubmit: (submitvalues) => {},
   });
 
   return (
-    <div className="mx-auto md:max-w-1/2 sm:w-1/2 px-4">
+    <div className="mx-auto my-5 bg-slate-900 bg-opacity-70 p-5 sm:w-[75%] md:w-1/2 lg:w-1/3">
       <h2 className="text-3xl">Sign In</h2>
-      <form className="bg-slate-400 sm:w-1/2" onSubmit={handleSubmit}>
+      <form className="my-3 flex flex-col gap-3" onSubmit={handleSubmit}>
         <Input
           type="text"
-          value={values.email}
+          name={Object.keys(initialValues)[1]}
           onChange={handleChange}
           label="Email"
+          errorMessage={errors.email}
         />
         <Input
           type="password"
-          value={values.password}
+          name={Object.keys(initialValues)[2]}
           onChange={handleChange}
           label="Password"
+          errorMessage={errors.password}
         />
         <Button onClick={() => {}} label="Login" variant="primary" />
       </form>
