@@ -1,11 +1,19 @@
-import { FC } from "react";
+import { ChangeEvent, FC, useId } from "react";
 
 type TInputProps = {
   label: string;
-  onChange: (value: string) => void;
-  errorMessage: string;
+  type: string;
+  value: string;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
-export const Input: FC<TInputProps> = () => {
-  return <input type="text" />;
+export const Input: FC<TInputProps> = ({ label, type, value, onChange }) => {
+  const inputId = useId();
+
+  return (
+    <div>
+      <label htmlFor={inputId}></label>
+      <input id={inputId} type={type} value={value} onChange={onChange} />
+    </div>
+  );
 };
