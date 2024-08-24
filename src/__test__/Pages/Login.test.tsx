@@ -1,9 +1,14 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, test } from "vitest";
 import { Login } from "../../pages/Login";
 
 describe("Test Login Page", () => {
-  render(<Login />);
+  render(
+    <MemoryRouter>
+      <Login />
+    </MemoryRouter>
+  );
 
   test("Sign in form must have a title", () => {
     const formTitle = screen.getByRole("heading", { level: 2 });
