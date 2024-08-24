@@ -1,19 +1,32 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import CloseMenuIcon from "../assets/close-menu.svg";
 import OpenMenuIcon from "../assets/open-menu.svg";
+import { menus } from "../data/menus";
+import { useOutsideClick } from "../hooks/useOutsideClick";
 
 export const Navbar = () => {
+  const navbarRef = useRef<HTMLDivElement | null>(null);
+  const isOutSideClick = useOutsideClick({
+    element: navbarRef.current as HTMLElement,
+  });
+
+  const EXPECTED_WINDOW_WIDTH = 700;
   const logoPath = "lock.svg";
+
   const [showMenu, setShowMenu] = useState(false);
-  const [isSmallWindowWidth, setIsSmallWindowWidth] = useState(false);
-  const handleMenuToggle = () => setShowMenu(!showMenu);
+  const [isSmallWindowWidth, setIsSmallWindowWidth] = useState(
+    innerWidth < EXPECTED_WINDOW_WIDTH
+  );
 
   useEffect(() => {
     const handleWindowResize = () => {
       let timeout = null;
       timeout && clearTimeout(timeout);
-      timeout = setTimeout(() => setIsSmallWindowWidth(innerWidth < 700), 500);
+      timeout = setTimeout(
+        () => setIsSmallWindowWidth(innerWidth < EXPECTED_WINDOW_WIDTH),
+        500
+      );
     };
 
     window.addEventListener("resize", handleWindowResize);
@@ -21,29 +34,63 @@ export const Navbar = () => {
     return () => window.removeEventListener("resize", handleWindowResize);
   });
 
+  useEffect(() => {
+    isOutSideClick && setShowMenu(false);
+  }, [isOutSideClick]);
+
+  const handleMenuToggle = () => setShowMenu(!showMenu);
+
   return (
-    <header className="w-full bg-slate-900 bg-opacity-50 items-center p-3 flex justify-between sm:p-5 md:p-8">
+    <header className="w-full relative  items-center p-3 flex justify-between sm:p-5 md:p-8">
       <img src={logoPath} className="text-white h-8" />
 
-      <div onClick={handleMenuToggle}>
-        <img
-          src={showMenu ? CloseMenuIcon : OpenMenuIcon}
-          className="fixed top-2 right-2 h-10 cursor-pointer hover:-translate-y-2 transition-all
-        "
-        />
-      </div>
-      {showMenu && (
-        <nav
-          className="
-        flex justify-between gap-4 
-        items-center uppercase text-xl
-        "
-        >
-          <NavLink to="/">Products</NavLink>
-          <NavLink to="/create-account">Register</NavLink>
-          <NavLink to="/login">Login</NavLink>
-        </nav>
-      )}
+      <nav
+        ref={navbarRef}
+        className={` text-lg uppercase flex gap-3 text-slate-300 text-opacity-90
+            ${
+              isSmallWindowWidth
+                ? showMenu
+                  ? "flex-col absolute right-3 -bottom-32 gap-0 w-44"
+                  : ""
+                : ""
+            }
+            `}
+      >
+        {isSmallWindowWidth && (
+          <div onClick={handleMenuToggle}>
+            <img
+              tabIndex={0}
+              src={showMenu ? CloseMenuIcon : OpenMenuIcon}
+              className={`fixed top-2 right-2 h-8 
+            transition-all
+            duration-1000
+           cursor-pointer
+           hover:h-10
+          ${showMenu && "h-10"}
+          `}
+            />
+          </div>
+        )}
+        {menus.map(({ to, label }, index) => (
+          <NavLink
+            onClick={handleMenuToggle}
+            className={`
+                 bg-gradient-to-r hover:from-slate-700 hover:to-slate-900 rounded transition-all  py-2 px-3
+              ${
+                isSmallWindowWidth &&
+                ` bg-slate-900 hover:bg-opacity-100
+              ${index == menus.length - 1 && "rounded-b-lg"}
+              ${index === 0 && "rounded-t-lg"}
+              ${!showMenu && "hidden"} 
+              `
+              }`}
+            to={to}
+            key={label}
+          >
+            {label}
+          </NavLink>
+        ))}
+      </nav>
     </header>
   );
 };
