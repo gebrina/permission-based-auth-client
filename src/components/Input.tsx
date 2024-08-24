@@ -12,14 +12,15 @@ export const Input: FC<TInputProps> = ({ label, type, name, onChange }) => {
   const inputId = useId();
 
   return (
-    <div className="flex flex-col gap-2  text-lg ">
+    <div className="flex flex-col gap-2  text-lg">
       <label htmlFor={inputId}>{label}</label>
       <input
         autoComplete="off"
         className="border-none rounded outline-none bg-transparent
          shadow-sm
-         shadow-slate-700
+         shadow-slate-300
          py-1
+         md:py-2
          px-3
         "
         id={inputId}
