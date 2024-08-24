@@ -27,41 +27,46 @@ describe("Create Account Page Tests", () => {
     expect(inputFields).toHaveLength(6);
   });
 
-  test("Username field must have empty value initailly", () => {
+  test("Username field must have empty value initially", () => {
     const usernameField: HTMLInputElement = screen.getByLabelText("Username");
     expect(usernameField).toBeTruthy();
     expect(usernameField.value).toBeFalsy();
   });
 
-  test("First Nname field must have empty value initailly", () => {
+  test("First Nname field must have empty value initially", () => {
     const firstNameField: HTMLInputElement =
       screen.getByLabelText("First Name");
     expect(firstNameField).toBeTruthy();
     expect(firstNameField.value).toBeFalsy();
   });
 
-  test("Last Name field must have empty value initailly", () => {
+  test("Last Name field must have empty value initially", () => {
     const lastNameField: HTMLInputElement = screen.getByLabelText("Last Name");
     expect(lastNameField).toBeTruthy();
     expect(lastNameField.value).toBeFalsy();
   });
 
-  test("Email field must have empty value initailly", () => {
+  test("Email field must have empty value initially", () => {
     const emailField: HTMLInputElement = screen.getByLabelText(/email/i);
     expect(emailField).toBeTruthy();
     expect(emailField.value).toBeFalsy();
   });
 
-  test("Occupation field must have empty value initailly", () => {
+  test("Occupation field must have empty value initially", () => {
     const occupationField: HTMLInputElement =
       screen.getByLabelText(/occupation/i);
     expect(occupationField).toBeTruthy();
     expect(occupationField.value).toBeFalsy();
   });
 
-  test("Password field must have empty value initailly", () => {
+  test("Password field must have empty value initially", () => {
     const passwordField: HTMLInputElement = screen.getByLabelText(/password/i);
     expect(passwordField).toBeTruthy();
     expect(passwordField.value).toBeFalsy();
+  });
+
+  test("Creat Account form must have a submit button", () => {
+    const submitButton = screen.getByRole("button", { name: "Sign up" });
+    expect(submitButton).toBeTruthy();
   });
 });
