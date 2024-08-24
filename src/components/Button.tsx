@@ -3,6 +3,7 @@ import { FC } from "react";
 type ButtonVariant = "primary" | "secondary" | "teritiary";
 type TButtonProps = {
   variant: ButtonVariant;
+  styleClass?: string;
   onClick?: () => void;
   label: string;
 };
@@ -24,7 +25,12 @@ const getButtonStyle = (variant: ButtonVariant) => {
   }
 };
 
-export const Button: FC<TButtonProps> = ({ variant, label, onClick }) => {
+export const Button: FC<TButtonProps> = ({
+  variant,
+  label,
+  styleClass,
+  onClick,
+}) => {
   return (
     <button
       onClick={onClick}
@@ -33,7 +39,7 @@ export const Button: FC<TButtonProps> = ({ variant, label, onClick }) => {
        py-2
        text-xl
        rounded
-    ${getButtonStyle(variant)}`}
+    ${getButtonStyle(variant)} ${styleClass}`}
     >
       {label}
     </button>

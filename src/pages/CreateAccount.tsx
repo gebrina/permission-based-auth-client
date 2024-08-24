@@ -23,7 +23,7 @@ export const CreateAccount = () => {
     <div className=" xl:w-1/2 mx-auto bg-gradient-to-tl rounded-lg  to-slate-800  from-bg-slate-900 p-5 bg-opacity-70  mt-8 ">
       <h1 className="text-3xl font-bold">Create Account</h1>
       <form onSubmit={handleSubmit} className="flex flex-col">
-        <div className="md:flex gap-3 py-2 md:p-4 ">
+        <div className="md:flex gap-3 py-2 md:py-4 ">
           <div className="flex-1 space-y-2 md:space-y-5">
             <Input
               label="Username"
@@ -71,7 +71,7 @@ export const CreateAccount = () => {
             />
           </div>
         </div>
-        <Button label="Sign up" variant="secondary" />
+        <Button label="Sign up" variant="secondary" styleClass="lg:w-1/2" />
         <p className="text-sm text-opacity-70 lg: mt-2 text-slate-50 ">
           Already created account{" "}
           <NavLink className="underline text-blue-400" to="/login">
