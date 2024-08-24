@@ -13,6 +13,7 @@ export const Navbar = () => {
 
   const EXPECTED_WINDOW_WIDTH = 700;
   const logoPath = "lock.svg";
+  const pathname = location.pathname;
 
   const [showMenu, setShowMenu] = useState(false);
   const [isSmallWindowWidth, setIsSmallWindowWidth] = useState(
@@ -43,10 +44,9 @@ export const Navbar = () => {
   return (
     <header className="w-full relative  items-center p-3 flex justify-between sm:p-5 md:p-8">
       <img src={logoPath} className="text-white h-8" />
-
       <nav
         ref={navbarRef}
-        className={` text-lg uppercase flex gap-3 text-slate-300 text-opacity-90
+        className={` text-lg uppercase  flex md:gap-3 text-slate-300 text-opacity-90
             ${
               isSmallWindowWidth
                 ? showMenu
@@ -61,12 +61,12 @@ export const Navbar = () => {
             <img
               tabIndex={0}
               src={showMenu ? CloseMenuIcon : OpenMenuIcon}
-              className={`fixed top-2 right-2 h-8 
+              className={`fixed top-4 right-2 
             transition-all
             duration-1000
            cursor-pointer
            hover:h-10
-          ${showMenu && "h-10"}
+          ${showMenu ? "h-10" : "h-8"}
           `}
             />
           </div>
@@ -75,13 +75,15 @@ export const Navbar = () => {
           <NavLink
             onClick={handleMenuToggle}
             className={`
-                 bg-gradient-to-r hover:from-slate-700 hover:to-slate-900 rounded transition-all  py-2 px-3
+                 bg-gradient-to-r ${
+                   pathname === to && "from-slate-600"
+                 }  hover:from-slate-700 hover:to-slate-900 rounded transition-all  py-2 px-3
               ${
                 isSmallWindowWidth &&
-                ` bg-slate-900 hover:bg-opacity-100
-              ${index == menus.length - 1 && "rounded-b-lg"}
+                `${index === menus.length - 1 && "rounded-b-lg"}
               ${index === 0 && "rounded-t-lg"}
               ${!showMenu && "hidden"} 
+        
               `
               }`}
             to={to}

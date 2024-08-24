@@ -5,7 +5,7 @@ type TMenuItem = {
 
 export const menus: TMenuItem[] = [
   {
-    to: "/products",
+    to: "/",
     label: "Products",
   },
   {
