@@ -2,17 +2,21 @@ import { useFormik } from "formik";
 import { NavLink } from "react-router-dom";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
+import { loginFormValidator } from "../validators";
 
 export const Login = () => {
   const initialValues = {
-    password: "",
     email: "",
+    password: "",
   };
 
-  const { handleChange, errors, handleSubmit } = useFormik({
-    initialValues,
-    onSubmit: () => {},
-  });
+  const { handleChange, errors, touched, handleSubmit, handleBlur } = useFormik(
+    {
+      initialValues,
+      validationSchema: loginFormValidator,
+      onSubmit: () => {},
+    }
+  );
 
   return (
     <div className="mx-auto mt-10 bg-gradient-to-bl  from-bg-slate-900 bg-opacity-70 p-5 sm:w-[75%] md:w-1/2 lg:w-1/3">
@@ -24,17 +28,19 @@ export const Login = () => {
       >
         <Input
           type="text"
-          name={Object.keys(initialValues)[1]}
-          onChange={handleChange}
+          name={Object.keys(initialValues)[0]}
           label="Email"
-          errorMessage={errors.email}
+          errorMessage={touched.email ? errors.email : ""}
+          onChange={handleChange}
+          onBlur={handleBlur}
         />
         <Input
           type="password"
-          name={Object.keys(initialValues)[2]}
-          onChange={handleChange}
+          name={Object.keys(initialValues)[1]}
           label="Password"
-          errorMessage={errors.password}
+          errorMessage={touched.password ? errors.password : ""}
+          onChange={handleChange}
+          onBlur={handleBlur}
         />
         <Button label="Login" variant="teritiary" />
       </form>
