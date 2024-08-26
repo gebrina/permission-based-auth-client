@@ -37,7 +37,9 @@ export const Input: FC<TInputProps> = ({
         onChange={onChange}
         onBlur={onBlur}
       />
-      <p className="absolute text-red-500 right-0 text-sm">{errorMessage}</p>
+      <p className="absolute text-red-500 right-0 top-3 text-sm">
+        {errorMessage}
+      </p>
     </div>
   );
 };
