@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import "./__mock__";
 import { App } from "./App.tsx";
 import "./index.css";
 

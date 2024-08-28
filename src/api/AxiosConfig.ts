@@ -5,4 +5,4 @@ export const axios = import.meta.env.DEV
   ? Axios.create()
   : Axios.create({ baseURL: import.meta.env.API_URL });
 
-export const mock = new AxiosMockAdapter(axios, { delayResponse: 500 });
+export const mock = new AxiosMockAdapter(axios, { delayResponse: 1000 });
