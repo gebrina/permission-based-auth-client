@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { getAll } from "../api/Requests";
-import { Loader } from "../components/Loader";
-import { ProductCard } from "../components/ProductCard";
+import { Loader, Notification, ProductCard } from "../components";
 import { Product } from "../types";
 
 export const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -15,7 +15,7 @@ export const Products = () => {
         setProducts(data);
       })
       .catch((err) => {
-        console.log(err);
+        setErrorMessage(err.message);
       })
       .finally(() => {
         setLoading(false);
@@ -26,6 +26,7 @@ export const Products = () => {
 
   return (
     <div className="bg-red-50 w-full h-full bg-opacity-10">
+      <Notification message={errorMessage} />
       {!!products.length &&
         products.map((product) => (
           <ProductCard {...product} key={product.id} />

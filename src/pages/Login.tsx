@@ -1,7 +1,6 @@
 import { useFormik } from "formik";
 import { NavLink } from "react-router-dom";
-import { Button } from "../components/Button";
-import { Input } from "../components/Input";
+import { Button, Input } from "../components";
 import { loginFormValidator } from "../validators";
 
 export const Login = () => {

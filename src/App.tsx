@@ -1,6 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Footer } from "./components/Footer";
-import { Navbar } from "./components/Navbar";
+import { Footer, Navbar } from "./components";
 import { ConfirmEmail } from "./pages/ConfirmEmail";
 import { CreateAccount } from "./pages/CreateAccount";
 import { ForgotPassword } from "./pages/ForgotPassword";
