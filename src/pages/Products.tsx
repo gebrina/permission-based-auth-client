@@ -25,10 +25,10 @@ export const Products = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="px-9 w-full my-10 sm:w-4/5 md:w-3/4 lg:w-2/3 h-full mx-auto bg-opacity-10">
+    <div className="products-container px-9 w-full my-10 sm:w-full overflow-y-auto  xl:w-3/4 h-full mx-auto bg-opacity-10">
       {errorMessage && <Notification type="error" message={errorMessage} />}
       {!!products.length && (
-        <div className="products-container">
+        <div className="products-card">
           {products.map((product) => (
             <ProductCard {...product} key={product.id} />
           ))}
