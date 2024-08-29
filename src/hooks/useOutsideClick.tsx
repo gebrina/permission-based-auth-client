@@ -10,7 +10,7 @@ export const useOutsideClick: FC<TProps> = ({ element }): boolean => {
   useEffect(() => {
     const handleDocumentClick = (event: Event) => {
       const clickedElement = event.target as HTMLElement;
-      if (element.contains(clickedElement)) setIsOutsideClick(false);
+      if (element?.contains(clickedElement)) setIsOutsideClick(false);
       else setIsOutsideClick(true);
     };
 

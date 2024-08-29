@@ -25,7 +25,7 @@ export const Products = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="products-container px-9 w-full my-10 sm:w-full overflow-y-auto  xl:w-3/4 h-full mx-auto bg-opacity-10">
+    <div className="px-9 w-full sm:w-full h-full  xl:w-3/4  mx-auto bg-opacity-10">
       {errorMessage && <Notification type="error" message={errorMessage} />}
       {!!products.length && (
         <div className="products-card">

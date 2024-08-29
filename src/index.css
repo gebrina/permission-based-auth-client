@@ -8,12 +8,10 @@
     @apply grid gap-8;
   }
 
-  .products-container::-webkit-scrollbar {
-    /* @apply bg; */
-    @apply bg-slate-300 w-2 bg-opacity-75;
+  .page-content::-webkit-scrollbar {
+    @apply bg-slate-300 w-2 bg-opacity-75 rounded-full;
   }
-
-  .products-container::-webkit-scrollbar-thumb {
-    @apply bg-slate-700 bg-opacity-70;
+  .page-content::-webkit-scrollbar-thumb {
+    @apply bg-slate-700 bg-opacity-70 rounded-full;
   }
 }

@@ -10,12 +10,12 @@ import { ResetPassword } from "./pages/ResetPassword";
 
 export const App = () => {
   return (
-    <div className="sm:container overflow-hidden  flex  flex-col gap-8 mx-auto  h-full w-full">
+    <div className="sm:container overflow-hidden flex  flex-col gap-8 mx-auto  h-full w-full">
       <BrowserRouter>
         <div className="h-12">
           <Navbar />
         </div>
-        <div className="flex-1">
+        <div className="page-content mt-10 flex-1 overflow-y-auto">
           <Routes>
             <Route path="" element={<Products />} />
             <Route path="login" element={<Login />} />
