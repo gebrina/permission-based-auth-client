@@ -1,8 +1,12 @@
 import { FC } from "react";
 
-export const CloseIcon: FC<{ styleClass: string }> = ({ styleClass }) => {
+export const CloseIcon: FC<{ styleClass: string; onClick?: () => void }> = ({
+  styleClass,
+  onClick,
+}) => {
   return (
     <svg
+      onClick={onClick}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 30 30"
       width="20px"
