@@ -5,7 +5,7 @@
 @layer components {
   .products-card {
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    @apply grid gap-8;
+    @apply grid gap-8 md:gap-10;
   }
 
   .page-content::-webkit-scrollbar {

@@ -1,4 +1,5 @@
-import { FC } from "react";
+import { FC, useEffect, useRef } from "react";
+import placeholderImage from "../assets/placeholder.jpeg";
 import { Product } from "../types";
 import { formatNumber } from "../utils";
 
@@ -9,13 +10,31 @@ export const ProductCard: FC<Product> = ({
   image,
   price,
 }) => {
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const img = entry.target as HTMLImageElement;
+        const loadedImageUrl = img.getAttribute("data-src")!;
+        img.style.filter = "blur(0)";
+        img.src = loadedImageUrl;
+        img.classList.remove("animate-pulse");
+        observer.disconnect();
+      });
+    });
+    imgRef.current && observer.observe(imgRef.current);
+  }, []);
+
   return (
     <div className="h-80 sm:h-48 bg-gradient-to-tr shadow-lg shadow-slate-500 rounded-lg">
       <div className="h-full flex sm:items-center gap-2 flex-col sm:flex-row">
         <img
+          ref={imgRef}
           loading="lazy"
-          className="h-1/2 sm:h-full object-cover mix-blend-difference aspect-square rounded-lg"
-          src={image}
+          className="h-1/2 blur-[20px] animate-pulse  sm:h-full object-cover mix-blend-difference aspect-square rounded-lg"
+          src={placeholderImage}
+          data-src={image}
           alt={name}
         />
         <div className="flex flex-col justify-between h-full px-2 sm:px-0">
