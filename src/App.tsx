@@ -21,9 +21,12 @@ export const App = () => {
     <BrowserRouter>
       {showNavandFooter ? (
         <div
-          className="sm:container
-                    overflow-hidden flex 
-                    flex-col gap-8 mx-auto  h-full w-full"
+          className="sm:container  flex 
+                    flex-col gap-8 mx-auto  
+                    h-full
+                    w-full
+                    overflow-hidden
+                    "
         >
           <div className="h-12">
             <Navbar />
@@ -38,15 +41,14 @@ export const App = () => {
               <Route path="reset-password/:email" element={<ResetPassword />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <div className="h-12">
-              <Footer />
-            </div>
+          </div>
+          <div className="h-12">
+            <Footer />
           </div>
         </div>
       ) : (
         <DashboardRoutes />
       )}
-      ;
     </BrowserRouter>
   );
 };

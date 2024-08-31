@@ -17,8 +17,8 @@ export const ProductCard: FC<Product> = ({
       entries.forEach((entry) => {
         const img = entry.target as HTMLImageElement;
         const loadedImageUrl = img.getAttribute("data-src")!;
-        img.style.filter = "blur(0)";
         img.src = loadedImageUrl;
+        img.style.filter = "blur(0)";
         img.classList.remove("animate-pulse");
         observer.disconnect();
       });
