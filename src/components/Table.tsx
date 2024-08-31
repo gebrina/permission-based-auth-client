@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, Fragment } from "react";
 
 export type THeader = {
   name?: string;
@@ -18,21 +18,21 @@ export const Table: FC<TTableProps> = ({ headers, data }) => (
       <thead>
         <tr>
           {headers.map(({ key, name, styleClasses }) => (
-            <>
+            <Fragment key={key}>
               {name && (
                 <th className={styleClasses} key={key}>
                   {name}
                 </th>
               )}
-            </>
+            </Fragment>
           ))}
         </tr>
       </thead>
       <tbody>
         {data.map((item) => (
           <tr key={item.id}>
-            {headers.map(({ key, styleClasses }) => (
-              <td className={styleClasses} key={key}>
+            {headers.map(({ key, styleClasses }, index) => (
+              <td className={styleClasses} key={key + index}>
                 {key !== "actions" ? (
                   item[key]
                 ) : (
