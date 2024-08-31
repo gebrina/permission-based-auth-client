@@ -1,6 +1,12 @@
-export const Loader = () => {
+import { FC } from "react";
+
+type TLoaderProps = {
+  classStyles?: string;
+};
+
+export const Loader: FC<TLoaderProps> = ({ classStyles }) => {
   return (
-    <div className="w-1/2 mx-auto flex justify-center h-full">
+    <div className={`${classStyles}  w-1/2 mx-auto flex justify-center h-full`}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="3em"

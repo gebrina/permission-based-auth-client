@@ -3,6 +3,7 @@ import { SideNav } from "../../components/SideNav";
 import { dashboardMenus } from "../../data/menus";
 import { Home } from "./Home";
 import { Products } from "./Products";
+import { Roles } from "./Roles";
 import { Users } from "./Users";
 
 export const DashboardRoutes = () => {
@@ -15,6 +16,7 @@ export const DashboardRoutes = () => {
           <Route path="dashboard" element={<Home />} />
           <Route path="dashboard/users" element={<Users />} />
           <Route path="dashboard/products" element={<Products />} />
+          <Route path="dashboard/roles" element={<Roles />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </section>

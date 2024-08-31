@@ -1,3 +1,7 @@
+import DashboardIcon from "../assets/dashboard.svg";
+import ProductsIcon from "../assets/products.svg";
+import UserRolesIcon from "../assets/user-role.svg";
+import UsersIcon from "../assets/users.svg";
 import { TMenu } from "../components/SideNav";
 
 type TMenuItem = {
@@ -22,18 +26,23 @@ export const menus: TMenuItem[] = [
 
 export const dashboardMenus: TMenu[] = [
   {
-    icon: "U",
+    icon: DashboardIcon,
+    link: "/dashboard",
+    title: "Home",
+  },
+  {
+    icon: UsersIcon,
     link: "/dashboard/users",
     title: "Users",
   },
   {
-    icon: "P",
-    link: "/dashboard/products",
-    title: "Products",
-  },
-  {
-    icon: "R",
+    icon: UserRolesIcon,
     link: "/dashboard/roles",
     title: "Roles",
+  },
+  {
+    icon: ProductsIcon,
+    link: "/dashboard/products",
+    title: "Products",
   },
 ];
