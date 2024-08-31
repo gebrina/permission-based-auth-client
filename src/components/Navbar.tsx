@@ -46,7 +46,7 @@ export const Navbar = () => {
       <img src={logoPath} className="text-white h-8" />
       <nav
         ref={navbarRef}
-        className={` text-lg uppercase  flex md:gap-3 text-slate-300 text-opacity-90
+        className={` text-lg uppercase z-10 flex md:gap-3 text-slate-300 text-opacity-90
             ${
               isSmallWindowWidth
                 ? showMenu
