@@ -13,14 +13,14 @@ type TTableProps = {
 };
 
 export const Table: FC<TTableProps> = ({ headers, data }) => (
-  <div>
-    <table>
+  <div className="">
+    <table className="w-full bg-slate-200 bg-opacity-10">
       <thead>
-        <tr>
+        <tr className="">
           {headers.map(({ key, name, styleClasses }) => (
             <Fragment key={key}>
               {name && (
-                <th className={styleClasses} key={key}>
+                <th className={`${styleClasses} text-left pr-2 py-2`} key={key}>
                   {name}
                 </th>
               )}
@@ -32,7 +32,10 @@ export const Table: FC<TTableProps> = ({ headers, data }) => (
         {data.map((item) => (
           <tr key={item.id}>
             {headers.map(({ key, styleClasses }, index) => (
-              <td className={styleClasses} key={key + index}>
+              <td
+                className={`${styleClasses} py-2 border-b pr-2 truncate`}
+                key={key + index}
+              >
                 {key !== "actions" ? (
                   item[key]
                 ) : (

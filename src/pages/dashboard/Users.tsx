@@ -47,8 +47,7 @@ export const Users = () => {
     return <Loader classStyles="fixed sm:left-[42%] lg:left-[32%] top-[25%]" />;
 
   return (
-    <div>
-      <h2>Users</h2>
+    <div className="w-full flex">
       <Table headers={talbeHeaders} data={users} />
     </div>
   );
