@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAll } from "../../api/Requests";
 import { Loader } from "../../components";
+import { Header } from "../../components/Header";
 import { Table, THeader } from "../../components/Table";
 import { User } from "../../types";
 
@@ -11,6 +12,14 @@ export const Users = () => {
     {
       key: "id",
       styleClasses: "hidden",
+    },
+    {
+      key: "firstName",
+      name: "First Name",
+    },
+    {
+      key: "lastName",
+      name: "Last Name",
     },
     {
       key: "username",
@@ -47,8 +56,9 @@ export const Users = () => {
     return <Loader classStyles="fixed sm:left-[42%] lg:left-[32%] top-[25%]" />;
 
   return (
-    <div className="w-full flex">
+    <>
+      <Header title="Users" />
       <Table headers={talbeHeaders} data={users} />
-    </div>
+    </>
   );
 };

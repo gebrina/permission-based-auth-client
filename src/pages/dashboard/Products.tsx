@@ -1,3 +1,5 @@
+import { Header } from "../../components/Header";
+
 export const Products = () => {
-  return <div>Products</div>;
+  return <Header title="Products" />;
 };

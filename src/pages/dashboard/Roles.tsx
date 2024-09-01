@@ -1,3 +1,5 @@
+import { Header } from "../../components/Header";
+
 export const Roles = () => {
-  return <div>Roles</div>;
+  return <Header title="Roles" />;
 };
