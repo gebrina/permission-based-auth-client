@@ -37,14 +37,14 @@ export const SideNav: FC<TSideNavProps> = ({ menus }) => {
   return (
     <nav
       className={`${
-        open ? "w-60  bg-slate-800" : "w-10 pt-12"
+        open ? "w-60 md:w-72  bg-slate-800" : "w-10 pt-12"
       } overflow-hidden relative transition-all duration-500  h-screen shadow-xl shadow-slate-600`}
     >
       <img
         onClick={handleToggleMenu}
         src={open ? closeMenuIcon : openMenuIcon}
         className={`w-10 ${
-          open ? "left-48" : "left-0"
+          open ? "left-48 md:left-60" : "left-0"
         } hover:-rotate-[-360deg] absolute top-0 transition-all duration-300  cursor-pointer`}
       />
 
@@ -72,7 +72,7 @@ export const SideNav: FC<TSideNavProps> = ({ menus }) => {
           >
             <NavLink className="h-8 flex gap-2 items-center" to={link}>
               <img
-                className="h-full w-8  object-cover group-hover:rotate-[-360deg] transition-all mix-blend-screen"
+                className="h-full w-8 object-cover group-hover:rotate-[-360deg] transition-all mix-blend-screen"
                 src={icon}
                 alt={title}
               />
