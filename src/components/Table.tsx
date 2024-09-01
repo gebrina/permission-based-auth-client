@@ -1,3 +1,6 @@
+import DeleteIcon from "../assets/delete.svg";
+import EditIcon from "../assets/edit.svg";
+
 import { Fragment } from "react";
 
 export type THeader<T> = {
@@ -41,18 +44,32 @@ export function Table<T extends { id: string }>({
         </thead>
         <tbody>
           {data.map((item) => (
-            <tr key={item.id}>
+            <tr className="border-y border-slate-400" key={item.id}>
               {columns.map(({ key, styleClasses }, index) => (
                 <td
-                  className={`${styleClasses} py-2 border-b pr-2 truncate`}
+                  className={`${styleClasses} pl-0 p-2 truncate`}
                   key={key.toString() + index}
                 >
                   <>{item[key]}</>
                 </td>
               ))}
-              <td className="py-2 border-b pr-2">
-                {onDelete && <button>Delete</button>}
-                {onEdit && <button>Edit</button>}
+              <td className="p-2 flex gap-3">
+                {onEdit && (
+                  <img
+                    className="h-5 cursor-pointer hover:opacity-50"
+                    onClick={() => onEdit(item)}
+                    src={EditIcon}
+                    alt="Edit record"
+                  />
+                )}
+                {onDelete && (
+                  <img
+                    className="h-5 cursor-pointer hover:opacity-50"
+                    onClick={() => onDelete(item.id)}
+                    src={DeleteIcon}
+                    alt="Delete  record"
+                  />
+                )}
               </td>
             </tr>
           ))}

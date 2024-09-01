@@ -20,7 +20,7 @@ export const ProductCard: FC<Product> = ({
         const loadedImageUrl = img.getAttribute("data-src")!;
         img.src = loadedImageUrl;
         imageLoadTimeout && clearTimeout(imageLoadTimeout);
-        // wait untill image is full loaded
+        // wait until image is full loaded
         imageLoadTimeout = setTimeout(() => {
           img.classList.remove("animate-pulse");
           img.style.filter = "blur(0)";
