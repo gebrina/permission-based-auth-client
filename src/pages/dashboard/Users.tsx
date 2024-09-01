@@ -10,7 +10,7 @@ export const Users = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const talbeHeaders: THeader[] = [
+  const talbeHeaders: THeader<User>[] = [
     {
       key: "id",
       styleClasses: "hidden",
@@ -35,10 +35,6 @@ export const Users = () => {
       key: "occupation",
       name: "Occupation",
     },
-    {
-      key: "actions",
-      name: "actions",
-    },
   ];
 
   useEffect(() => {
@@ -51,11 +47,19 @@ export const Users = () => {
   if (isLoading)
     return <Loader classStyles="absolute  left-[25%]  top-[25%]" />;
 
+  const handleDelete = (rowId: string) => {};
+  const handleEdit = (rowData: User) => {};
+
   return (
     <>
       <Header title="Users" />
       {errorMessage && <Notification message={errorMessage} type="error" />}
-      <Table headers={talbeHeaders} data={users} />
+      <Table
+        columns={talbeHeaders}
+        data={users}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
+      />
     </>
   );
 };
