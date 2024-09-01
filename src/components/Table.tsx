@@ -14,7 +14,9 @@ type TTableProps<T> = {
   columns: THeader<T>[];
   onDelete?: (rowId: string) => void;
   onEdit?: (rowData: T) => void;
-  filter?: boolean;
+  filter?: {
+    columnKey?: keyof T;
+  };
 };
 
 export function Table<T extends { id: string }>({
@@ -22,14 +24,20 @@ export function Table<T extends { id: string }>({
   columns,
   onDelete,
   onEdit,
-  filter = true,
+  filter,
 }: TTableProps<T>) {
   const [searchedTerm, setSearchedTerm] = useState("");
   const filterOptions: TOption[] = columns.map((col) => ({
     value: col.key.toString(),
     label: col.name ?? "",
   }));
+
+  const selectedOption = filterOptions.find(
+    (x) => x.value === filter?.columnKey
+  );
+
   const [filteredData, setFilterdData] = useState(data);
+  const [searchBy, setSearchBy] = useState(filter?.columnKey);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const {
@@ -39,7 +47,7 @@ export function Table<T extends { id: string }>({
   };
 
   const handleSelect = (optoin: TOption) => {
-    alert(optoin.label);
+    setSearchBy(optoin.label as keyof T);
   };
 
   return (
@@ -48,15 +56,17 @@ export function Table<T extends { id: string }>({
         <div className="flex justify-end">
           <input
             type="search"
+            placeholder={`Type ${searchBy?.toString().toLowerCase()}...`}
             value={searchedTerm}
             onChange={handleChange}
-            className="bg-transparent  border-b-2 shadow-lg outline-none p-2 float-right mb-2"
+            className="bg-transparent rounded-lg mx-2 border-b-2 border-slate-400 border-opacity-35 shadow-lg outline-none px-2 py-1 text-lg float-right"
           />
-          <div className="relative w-32">
+          <div className="relative -top-3 min-w-32">
             <Select
               selectLabel="Filter by..."
               options={filterOptions}
               onSelect={handleSelect}
+              selected={selectedOption}
             />
           </div>
         </div>

@@ -55,6 +55,9 @@ export const Users = () => {
       <Header title="Users" />
       {errorMessage && <Notification message={errorMessage} type="error" />}
       <Table
+        filter={{
+          columnKey: "username",
+        }}
         columns={talbeHeaders}
         data={users}
         onDelete={handleDelete}
