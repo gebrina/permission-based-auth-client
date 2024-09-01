@@ -21,8 +21,8 @@ export const App = () => {
     <BrowserRouter>
       {showNavandFooter ? (
         <div
-          className="sm:container  flex 
-                    flex-col gap-8 mx-auto  
+          className="sm:container flex 
+                    flex-col  md:gap-16 mx-auto  
                     h-full
                     w-full
                     overflow-hidden

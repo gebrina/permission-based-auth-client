@@ -18,7 +18,7 @@ export const Login = () => {
   );
 
   return (
-    <div className="mx-auto mt-10 bg-gradient-to-bl  from-bg-slate-900 bg-opacity-70 p-5 sm:w-[75%] md:w-1/2 lg:w-1/3">
+    <div className="mx-auto bg-gradient-to-bl  from-bg-slate-900 bg-opacity-70 p-5 sm:w-[75%] md:w-1/2 lg:w-1/3">
       <h2 className="text-3xl">Sign In</h2>
       <form
         role="form"

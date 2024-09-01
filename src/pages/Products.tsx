@@ -11,21 +11,15 @@ export const Products = () => {
   useEffect(() => {
     setLoading(true);
     getAll<Product>("products")
-      .then((data) => {
-        setProducts(data);
-      })
-      .catch((err) => {
-        setErrorMessage(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .then((data) => setProducts(data))
+      .catch((err) => setErrorMessage(err.message))
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) return <Loader />;
 
   return (
-    <div className="px-9 w-full sm:w-full h-full  xl:w-3/4  mx-auto bg-opacity-10">
+    <div className="px-9 w-full sm:w-full h-full xl:w-3/4  mx-auto bg-opacity-10">
       {errorMessage && <Notification type="error" message={errorMessage} />}
       {!!products.length && (
         <div className="products-card">

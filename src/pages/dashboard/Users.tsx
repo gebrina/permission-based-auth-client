@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getAll } from "../../api/Requests";
-import { Loader } from "../../components";
+import { Loader, Notification } from "../../components";
 import { Header } from "../../components/Header";
 import { Table, THeader } from "../../components/Table";
 import { User } from "../../types";
@@ -8,6 +8,8 @@ import { User } from "../../types";
 export const Users = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const talbeHeaders: THeader[] = [
     {
       key: "id",
@@ -41,23 +43,18 @@ export const Users = () => {
 
   useEffect(() => {
     getAll<User>("users")
-      .then((data) => {
-        setUsers(data);
-      })
-      .catch((err) => {
-        console.log("fetching error", err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .then((data) => setUsers(data))
+      .catch((err) => setErrorMessage(err.message))
+      .finally(() => setIsLoading(false));
   }, []);
 
   if (isLoading)
-    return <Loader classStyles="fixed sm:left-[42%] lg:left-[32%] top-[25%]" />;
+    return <Loader classStyles="absolute  left-[25%]  top-[25%]" />;
 
   return (
     <>
       <Header title="Users" />
+      {errorMessage && <Notification message={errorMessage} type="error" />}
       <Table headers={talbeHeaders} data={users} />
     </>
   );

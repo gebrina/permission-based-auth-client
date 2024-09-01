@@ -12,7 +12,7 @@ export const DashboardRoutes = () => {
       <div>
         <SideNav menus={dashboardMenus} />
       </div>
-      <section className="space-y-3 w-full">
+      <section className="space-y-3 w-full relative overflow-hidden">
         <Routes>
           <Route path="dashboard" element={<Home />} />
           <Route path="dashboard/users" element={<Users />} />

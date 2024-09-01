@@ -23,7 +23,10 @@ export const CreateAccount = () => {
     }
   );
   return (
-    <div className=" xl:w-1/2 mx-auto bg-gradient-to-tl rounded-lg  to-slate-800  from-bg-slate-900 p-5 bg-opacity-70  mt-8 ">
+    <div
+      className="xl:w-1/2 mx-auto bg-gradient-to-tl rounded-lg 
+     to-slate-800  from-bg-slate-900 px-5 md:p-5 bg-opacity-70"
+    >
       <h1 className="text-3xl font-bold">Create Account</h1>
       <form onSubmit={handleSubmit} className="flex flex-col">
         <div className="md:flex gap-3 py-2 md:py-4 ">
