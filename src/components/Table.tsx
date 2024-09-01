@@ -45,14 +45,20 @@ export function Table<T extends { id: string }>({
   return (
     <div>
       {filter && (
-        <div>
+        <div className="flex justify-end">
           <input
             type="search"
             value={searchedTerm}
             onChange={handleChange}
-            className="bg-transparent border-b-2 shadow-lg outline-none p-2 float-right mb-2"
+            className="bg-transparent  border-b-2 shadow-lg outline-none p-2 float-right mb-2"
           />
-          <Select options={filterOptions} onSelect={handleSelect} />
+          <div className="relative w-32">
+            <Select
+              selectLabel="Filter by..."
+              options={filterOptions}
+              onSelect={handleSelect}
+            />
+          </div>
         </div>
       )}
       <table className="w-full bg-slate-200 bg-opacity-10">
