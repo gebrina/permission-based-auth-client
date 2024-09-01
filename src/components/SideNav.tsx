@@ -28,9 +28,15 @@ export const SideNav: FC<TSideNavProps> = ({ menus }) => {
   }, [pathname]);
 
   useEffect(() => {
+    const handleWindowResize = () => setOpen(!isMobile());
+    let timeout: ReturnType<typeof setTimeout>;
+
     window.addEventListener("resize", () => {
-      setOpen(!isMobile());
+      timeout && clearTimeout(timeout);
+      timeout = setTimeout(handleWindowResize, 500);
     });
+
+    return () => window.removeEventListener("resize", handleWindowResize);
   }, []);
 
   const handleToggleMenu = () => setOpen(!open);

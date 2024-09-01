@@ -4,6 +4,7 @@ import CloseMenuIcon from "../assets/close-menu.svg";
 import OpenMenuIcon from "../assets/open-menu.svg";
 import { menus } from "../data/menus";
 import { useOutsideClick } from "../hooks/useOutsideClick";
+import { isMobile } from "../utils";
 
 export const Navbar = () => {
   const navbarRef = useRef<HTMLDivElement | null>(null);
@@ -11,23 +12,17 @@ export const Navbar = () => {
     element: navbarRef.current as HTMLElement,
   });
 
-  const EXPECTED_WINDOW_WIDTH = 700;
   const logoPath = "lock.svg";
   const pathname = location.pathname;
 
   const [showMenu, setShowMenu] = useState(false);
-  const [isSmallWindowWidth, setIsSmallWindowWidth] = useState(
-    innerWidth < EXPECTED_WINDOW_WIDTH
-  );
+  const [isSmallWindowWidth, setIsSmallWindowWidth] = useState(isMobile());
 
   useEffect(() => {
     const handleWindowResize = () => {
       let timeout = null;
       timeout && clearTimeout(timeout);
-      timeout = setTimeout(
-        () => setIsSmallWindowWidth(innerWidth < EXPECTED_WINDOW_WIDTH),
-        500
-      );
+      timeout = setTimeout(() => setIsSmallWindowWidth(isMobile()), 500);
     };
 
     window.addEventListener("resize", handleWindowResize);
