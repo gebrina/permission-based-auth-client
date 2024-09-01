@@ -49,7 +49,7 @@ export const SideNav: FC<TSideNavProps> = ({ menus }) => {
       <img
         onClick={handleToggleMenu}
         src={open ? closeMenuIcon : openMenuIcon}
-        className={`w-10 ${
+        className={`w-8 ${
           open ? "left-48 md:left-60" : "left-0"
         } hover:-rotate-[-360deg] absolute top-0 transition-all duration-300  cursor-pointer`}
       />

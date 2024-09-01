@@ -1,7 +1,7 @@
+import { ChangeEvent, Fragment, useState } from "react";
 import DeleteIcon from "../assets/delete.svg";
 import EditIcon from "../assets/edit.svg";
-
-import { Fragment } from "react";
+import { Select, TOption } from "./";
 
 export type THeader<T> = {
   name?: string;
@@ -14,6 +14,7 @@ type TTableProps<T> = {
   columns: THeader<T>[];
   onDelete?: (rowId: string) => void;
   onEdit?: (rowData: T) => void;
+  filter?: boolean;
 };
 
 export function Table<T extends { id: string }>({
@@ -21,17 +22,47 @@ export function Table<T extends { id: string }>({
   columns,
   onDelete,
   onEdit,
+  filter = true,
 }: TTableProps<T>) {
+  const [searchedTerm, setSearchedTerm] = useState("");
+  const filterOptions: TOption[] = columns.map((col) => ({
+    value: col.key.toString(),
+    label: col.name ?? "",
+  }));
+  const [filteredData, setFilterdData] = useState(data);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { value },
+    } = event;
+    setSearchedTerm(value);
+  };
+
+  const handleSelect = (optoin: TOption) => {
+    alert(optoin.label);
+  };
+
   return (
-    <div className="">
+    <div>
+      {filter && (
+        <div>
+          <input
+            type="search"
+            value={searchedTerm}
+            onChange={handleChange}
+            className="bg-transparent border-b-2 shadow-lg outline-none p-2 float-right mb-2"
+          />
+          <Select options={filterOptions} onSelect={handleSelect} />
+        </div>
+      )}
       <table className="w-full bg-slate-200 bg-opacity-10">
         <thead>
-          <tr className="">
+          <tr>
             {columns.map(({ key, name, styleClasses }) => (
               <Fragment key={key.toString()}>
                 {name && (
                   <th
-                    className={`${styleClasses} text-left pr-2 py-2`}
+                    className={`${styleClasses} text-left p-2`}
                     key={key.toString()}
                   >
                     {name}
@@ -43,11 +74,11 @@ export function Table<T extends { id: string }>({
           </tr>
         </thead>
         <tbody>
-          {data.map((item) => (
+          {filteredData.map((item) => (
             <tr className="border-y border-slate-400" key={item.id}>
               {columns.map(({ key, styleClasses }, index) => (
                 <td
-                  className={`${styleClasses} pl-0 p-2 truncate`}
+                  className={`${styleClasses}  p-2 truncate`}
                   key={key.toString() + index}
                 >
                   <>{item[key]}</>
