@@ -27,7 +27,7 @@ export function Table<T extends { id: string }>({
   onEdit,
   filter,
 }: TTableProps<T>) {
-  const [searchedTerm, setSearchedTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const filterOptions: TOption[] = columns.map((col) => ({
     value: col.key.toString(),
     label: col.name ?? "",
@@ -44,7 +44,7 @@ export function Table<T extends { id: string }>({
     const {
       target: { value },
     } = event;
-    setSearchedTerm(value);
+    setSearchTerm(value);
     filterTableData(value);
   };
 
@@ -69,7 +69,7 @@ export function Table<T extends { id: string }>({
           <input
             type="search"
             placeholder={`Type ${searchBy?.toString().toLowerCase()}...`}
-            value={searchedTerm}
+            value={searchTerm}
             onChange={handleChange}
             className="bg-transparent rounded-lg mx-2 border-b-2 border-slate-400 border-opacity-35 shadow-lg outline-none px-2 py-1 text-md float-right"
           />
@@ -102,36 +102,47 @@ export function Table<T extends { id: string }>({
           </tr>
         </thead>
         <tbody>
-          {filteredData.map((item) => (
-            <tr className="border-y border-slate-400" key={item.id}>
-              {columns.map(({ key, styleClasses }, index) => (
-                <td
-                  className={`${styleClasses}  p-2 truncate`}
-                  key={key.toString() + index}
-                >
-                  <>{item[key]}</>
-                </td>
-              ))}
-              <td className="p-2 flex gap-3">
-                {onEdit && (
-                  <img
-                    className="h-5 cursor-pointer hover:opacity-50"
-                    onClick={() => onEdit(item)}
-                    src={EditIcon}
-                    alt="Edit record"
-                  />
-                )}
-                {onDelete && (
-                  <img
-                    className="h-5 cursor-pointer hover:opacity-50"
-                    onClick={() => onDelete(item.id)}
-                    src={DeleteIcon}
-                    alt="Delete  record"
-                  />
-                )}
-              </td>
-            </tr>
-          ))}
+          {filteredData.length > 0
+            ? filteredData.map((item) => (
+                <tr className="border-y border-slate-400" key={item.id}>
+                  {columns.map(({ key, styleClasses }, index) => (
+                    <td
+                      className={`${styleClasses}  p-2 truncate`}
+                      key={key.toString() + index}
+                    >
+                      <>{item[key]}</>
+                    </td>
+                  ))}
+                  <td className="p-2 flex gap-3">
+                    {onEdit && (
+                      <img
+                        className="h-5 cursor-pointer hover:opacity-50"
+                        onClick={() => onEdit(item)}
+                        src={EditIcon}
+                        alt="Edit record"
+                      />
+                    )}
+                    {onDelete && (
+                      <img
+                        className="h-5 cursor-pointer hover:opacity-50"
+                        onClick={() => onDelete(item.id)}
+                        src={DeleteIcon}
+                        alt="Delete  record"
+                      />
+                    )}
+                  </td>
+                </tr>
+              ))
+            : searchTerm && (
+                <tr>
+                  <td
+                    colSpan={columns.length}
+                    className="px-2 text-lg leading-10 animate-pulse text-slate-200 text-opacity-70"
+                  >
+                    Item not found.
+                  </td>
+                </tr>
+              )}
         </tbody>
       </table>
     </div>
