@@ -37,8 +37,16 @@ export function Table<T extends { id: string }>({
     (x) => x.value === filter?.columnKey
   );
 
+  const defaultFilterKey = filter?.columnKey ?? columns[0].key;
+  const defaultFilterName =
+    columns.filter((x) => x.key === filter?.columnKey)[0]?.name ??
+    columns[0].name;
+
+  const [searchBy, setSearchBy] = useState({
+    key: defaultFilterKey,
+    name: defaultFilterName,
+  });
   const [filteredData, setFilterdData] = useState(data);
-  const [searchBy, setSearchBy] = useState(filter?.columnKey);
 
   const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const {
@@ -49,18 +57,20 @@ export function Table<T extends { id: string }>({
   };
 
   const filterTableData = async (search: string) => {
-    if (search && searchBy) {
+    if (search && searchBy.key) {
       await wait(300);
-      console.log(searchBy);
       const filterdData = data.filter((x) =>
-        (x[searchBy] as string).toLowerCase().includes(search.toLowerCase())
+        (x[searchBy.key] as string).toLowerCase().includes(search.toLowerCase())
       );
       setFilterdData(filterdData);
     } else setFilterdData(data);
   };
 
-  const handleSelect = (optoin: TOption) =>
-    setSearchBy(optoin.value as keyof T);
+  const handleSelect = (option: TOption) =>
+    setSearchBy({
+      key: option.value as keyof T,
+      name: option.label,
+    });
 
   return (
     <div>
@@ -68,7 +78,7 @@ export function Table<T extends { id: string }>({
         <div className="flex justify-end">
           <input
             type="search"
-            placeholder={`Type ${searchBy?.toString().toLowerCase()}...`}
+            placeholder={`Type ${searchBy.name?.toLowerCase()}...`}
             value={searchTerm}
             onChange={handleChange}
             className="bg-transparent rounded-lg mx-2 border-b-2 border-slate-400 border-opacity-35 shadow-lg outline-none px-2 py-1 text-md float-right"
