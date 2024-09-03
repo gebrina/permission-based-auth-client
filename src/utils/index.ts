@@ -26,3 +26,10 @@ export const isMobile = (): boolean => {
   // consider if user is resizing the window manually
   return flag || window.innerWidth <= 600;
 };
+
+export const wait = (ms: number): Promise<void> =>
+  new Promise((resolve) => {
+    setTimeout(() => resolve(), ms);
+  });
+
+export const toLower = (value: string) => value.toLowerCase();

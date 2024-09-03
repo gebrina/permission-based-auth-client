@@ -1,6 +1,7 @@
 import { ChangeEvent, Fragment, useState } from "react";
 import DeleteIcon from "../assets/delete.svg";
 import EditIcon from "../assets/edit.svg";
+import { wait } from "../utils";
 import { Select, TOption } from "./";
 
 export type THeader<T> = {
@@ -39,16 +40,27 @@ export function Table<T extends { id: string }>({
   const [filteredData, setFilterdData] = useState(data);
   const [searchBy, setSearchBy] = useState(filter?.columnKey);
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const {
       target: { value },
     } = event;
     setSearchedTerm(value);
+    filterTableData(value);
   };
 
-  const handleSelect = (optoin: TOption) => {
-    setSearchBy(optoin.label as keyof T);
+  const filterTableData = async (search: string) => {
+    if (search && searchBy) {
+      await wait(300);
+      console.log(searchBy);
+      const filterdData = data.filter((x) =>
+        (x[searchBy] as string).toLowerCase().includes(search.toLowerCase())
+      );
+      setFilterdData(filterdData);
+    } else setFilterdData(data);
   };
+
+  const handleSelect = (optoin: TOption) =>
+    setSearchBy(optoin.value as keyof T);
 
   return (
     <div>
@@ -59,7 +71,7 @@ export function Table<T extends { id: string }>({
             placeholder={`Type ${searchBy?.toString().toLowerCase()}...`}
             value={searchedTerm}
             onChange={handleChange}
-            className="bg-transparent rounded-lg mx-2 border-b-2 border-slate-400 border-opacity-35 shadow-lg outline-none px-2 py-1 text-lg float-right"
+            className="bg-transparent rounded-lg mx-2 border-b-2 border-slate-400 border-opacity-35 shadow-lg outline-none px-2 py-1 text-md float-right"
           />
           <div className="relative -top-3 min-w-32">
             <Select

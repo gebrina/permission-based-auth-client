@@ -28,6 +28,7 @@ export const Select: FC<TSelectProps> = ({
   const handleSelect = (option: TOption) => {
     setSelectedOption(option);
     onSelect(option);
+    handleToggleOpenMenu();
   };
 
   return (
