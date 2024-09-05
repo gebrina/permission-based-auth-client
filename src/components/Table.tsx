@@ -90,16 +90,14 @@ export function Table<T extends { id: string }>({
   return (
     <div>
       {filter && (
-        <div className="flex justify-end">
+        <div className="flex  justify-end">
           <Input
             type="search"
             placeholder={`Type ${toLower(searchBy.name ?? "")}...`}
-            styleClasses="shadow-none"
-            // value={searchTerm}
+            styleClasses="mb-1 relative shadow-slate-500"
             onChange={handleChange}
-            // className="bg-transparent rounded-lg mx-2 border-b-2 border-slate-400 border-opacity-35 shadow-lg outline-none px-2 py-1 text-md float-right"
           />
-          <div className="relative -top-3 min-w-32">
+          <div className="relative ml-2  min-w-32">
             <Select
               selectLabel="Filter by..."
               options={filterOptions}
@@ -138,14 +136,21 @@ export function Table<T extends { id: string }>({
                     >
                       <>
                         {rowData?.id === item.id && edit ? (
-                          <input />
+                          <Input
+                            type="text"
+                            value={rowData[key]?.toString() ?? ""}
+                            onChange={() => {}}
+                            styleClasses="bg-slate-500 bg-opacity-50 w-full"
+                          />
                         ) : (
                           item[key]
                         )}
                       </>
                     </td>
                   ))}
-                  <td className="p-2 flex gap-3 items-center justify-center ">
+                  <td
+                    className={`p-2 flex gap-3 items-center bg-slate-400  justify-center`}
+                  >
                     {onEdit && (
                       <div className="flex items-center">
                         <img

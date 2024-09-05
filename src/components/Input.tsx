@@ -2,22 +2,24 @@ import { ChangeEvent, FC, FocusEvent, useId } from "react";
 import { twMerge } from "tailwind-merge";
 
 type TInputProps = {
-  type?: string;
-  styleClasses?: string;
-  placeholder?: string;
+  value?: string;
   label?: string;
   name?: string;
+  type?: string;
+  placeholder?: string;
+  styleClasses?: string;
   errorMessage?: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (event: FocusEvent<HTMLInputElement, HTMLElement>) => void;
 };
 
 export const Input: FC<TInputProps> = ({
+  value,
   label,
-  type,
   name,
-  errorMessage,
+  type,
   placeholder,
+  errorMessage,
   styleClasses,
   onChange,
   onBlur,
@@ -34,6 +36,7 @@ export const Input: FC<TInputProps> = ({
       <label htmlFor={inputId}>{label}</label>
       <input
         autoComplete="off"
+        value={value}
         placeholder={placeholder}
         className={classnames}
         id={inputId}
