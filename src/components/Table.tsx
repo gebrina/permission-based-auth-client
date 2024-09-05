@@ -1,7 +1,8 @@
-import { useFormik } from "formik";
 import { ChangeEvent, Fragment, useState } from "react";
+import CancelIcon from "../assets/cancel.svg";
 import DeleteIcon from "../assets/delete.svg";
 import EditIcon from "../assets/edit.svg";
+import UpdateIcon from "../assets/update.svg";
 import { filterById, toLower, wait } from "../utils";
 import { Input, Select, TOption } from "./";
 
@@ -28,12 +29,6 @@ export function Table<T extends { id: string }>({
   onEdit,
   filter,
 }: TTableProps<T>) {
-  const initialValues: T = {
-    id: "",
-  };
-
-  const {} = useFormik({ initialValues, onSubmit: () => {} });
-
   const filterOptions: TOption[] = columns.map((col) => ({
     value: col.key.toString(),
     label: col.name ?? "",
@@ -55,6 +50,7 @@ export function Table<T extends { id: string }>({
     name: defaultFilterName,
   });
   const [filteredData, setFilterdData] = useState(data);
+  const [edit, setEdit] = useState(false);
 
   const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const {
@@ -81,8 +77,14 @@ export function Table<T extends { id: string }>({
     });
 
   const handleEdit = (row: T) => {
+    setEdit(true);
     const filteredData = filterById(data, row.id);
     setRowData(filteredData);
+  };
+
+  const handleCancel = () => {
+    setEdit(false);
+    setRowData({ id: "" } as T);
   };
 
   return (
@@ -134,24 +136,40 @@ export function Table<T extends { id: string }>({
                       className={`${styleClasses}  p-2 truncate`}
                       key={key.toString() + index}
                     >
-                      <>{rowData?.id === item.id ? <input /> : item[key]}</>
+                      <>
+                        {rowData?.id === item.id && edit ? (
+                          <input />
+                        ) : (
+                          item[key]
+                        )}
+                      </>
                     </td>
                   ))}
-                  <td className="p-2 flex gap-3">
+                  <td className="p-2 flex gap-3 items-center justify-center ">
                     {onEdit && (
-                      <img
-                        className="h-5 cursor-pointer hover:opacity-50"
-                        onClick={() => handleEdit(item)}
-                        src={EditIcon}
-                        alt="Edit record"
-                      />
+                      <div className="flex items-center">
+                        <img
+                          className="h-7 cursor-pointer mix-blend-screen hover:opacity-50"
+                          src={edit ? rowData?.id && UpdateIcon : EditIcon}
+                          alt="Edit record"
+                          onClick={() => handleEdit(item)}
+                        />
+                        {edit && (
+                          <img
+                            className="h-4 mix-blend-difference cursor-pointer hover:opacity-50"
+                            alt="Cancel editing"
+                            src={CancelIcon}
+                            onClick={handleCancel}
+                          />
+                        )}
+                      </div>
                     )}
                     {onDelete && (
                       <img
-                        className="h-5 cursor-pointer hover:opacity-50"
-                        onClick={() => onDelete(item.id)}
-                        src={DeleteIcon}
+                        className="h-5 mix-blend-screen cursor-pointer hover:opacity-50"
                         alt="Delete  record"
+                        src={DeleteIcon}
+                        onClick={() => onDelete(item.id)}
                       />
                     )}
                   </td>
