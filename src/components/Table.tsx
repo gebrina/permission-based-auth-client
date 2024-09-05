@@ -87,6 +87,13 @@ export function Table<T extends { id: string }>({
     setRowData({ id: "" } as T);
   };
 
+  const handleTDInputChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    rowData: T
+  ) => {
+    console.log(event, rowData);
+  };
+
   return (
     <div>
       {filter && (
@@ -131,7 +138,9 @@ export function Table<T extends { id: string }>({
                 <tr className="border-y border-slate-400" key={item.id}>
                   {columns.map(({ key, styleClasses }, index) => (
                     <td
-                      className={`${styleClasses}  p-2 truncate`}
+                      className={`${styleClasses} p-2 ${
+                        edit && item.id === rowData?.id && "pb-3"
+                      }`}
                       key={key.toString() + index}
                     >
                       <>
@@ -139,8 +148,10 @@ export function Table<T extends { id: string }>({
                           <Input
                             type="text"
                             value={rowData[key]?.toString() ?? ""}
-                            onChange={() => {}}
-                            styleClasses="bg-slate-500 bg-opacity-50 w-full"
+                            onChange={(event) =>
+                              handleTDInputChange(event, item)
+                            }
+                            styleClasses="bg-slate-500  bg-opacity-50 w-full h-10"
                           />
                         ) : (
                           item[key]
@@ -148,35 +159,39 @@ export function Table<T extends { id: string }>({
                       </>
                     </td>
                   ))}
-                  <td
-                    className={`p-2 flex gap-3 items-center bg-slate-400  justify-center`}
-                  >
-                    {onEdit && (
-                      <div className="flex items-center">
-                        <img
-                          className="h-7 cursor-pointer mix-blend-screen hover:opacity-50"
-                          src={edit ? rowData?.id && UpdateIcon : EditIcon}
-                          alt="Edit record"
-                          onClick={() => handleEdit(item)}
-                        />
-                        {edit && (
+                  <td className={`p-2`}>
+                    <div className="flex items-center justify-center gap-4">
+                      {onEdit && (
+                        <div className="flex items-center">
                           <img
-                            className="h-4 mix-blend-difference cursor-pointer hover:opacity-50"
-                            alt="Cancel editing"
-                            src={CancelIcon}
-                            onClick={handleCancel}
+                            className="h-8 cursor-pointer mix-blend-screen hover:opacity-50"
+                            src={
+                              edit && rowData?.id === item.id
+                                ? UpdateIcon
+                                : EditIcon
+                            }
+                            alt="Edit record"
+                            onClick={() => handleEdit(item)}
                           />
-                        )}
-                      </div>
-                    )}
-                    {onDelete && (
-                      <img
-                        className="h-5 mix-blend-screen cursor-pointer hover:opacity-50"
-                        alt="Delete  record"
-                        src={DeleteIcon}
-                        onClick={() => onDelete(item.id)}
-                      />
-                    )}
+                          {edit && rowData?.id === item.id && (
+                            <img
+                              className="h-4 mix-blend-difference cursor-pointer hover:opacity-50"
+                              alt="Cancel editing"
+                              src={CancelIcon}
+                              onClick={handleCancel}
+                            />
+                          )}
+                        </div>
+                      )}
+                      {onDelete && (
+                        <img
+                          className="h-5 mix-blend-screen cursor-pointer hover:opacity-50"
+                          alt="Delete  record"
+                          src={DeleteIcon}
+                          onClick={() => onDelete(item.id)}
+                        />
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))
