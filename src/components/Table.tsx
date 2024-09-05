@@ -1,8 +1,9 @@
+import { useFormik } from "formik";
 import { ChangeEvent, Fragment, useState } from "react";
 import DeleteIcon from "../assets/delete.svg";
 import EditIcon from "../assets/edit.svg";
-import { wait } from "../utils";
-import { Select, TOption } from "./";
+import { filterById, toLower, wait } from "../utils";
+import { Input, Select, TOption } from "./";
 
 export type THeader<T> = {
   name?: string;
@@ -27,7 +28,12 @@ export function Table<T extends { id: string }>({
   onEdit,
   filter,
 }: TTableProps<T>) {
-  const [searchTerm, setSearchTerm] = useState("");
+  const initialValues: T = {
+    id: "",
+  };
+
+  const {} = useFormik({ initialValues, onSubmit: () => {} });
+
   const filterOptions: TOption[] = columns.map((col) => ({
     value: col.key.toString(),
     label: col.name ?? "",
@@ -42,6 +48,8 @@ export function Table<T extends { id: string }>({
     columns.filter((x) => x.key === filter?.columnKey)[0]?.name ??
     columns[0].name;
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [rowData, setRowData] = useState<(typeof data)[0]>();
   const [searchBy, setSearchBy] = useState({
     key: defaultFilterKey,
     name: defaultFilterName,
@@ -60,7 +68,7 @@ export function Table<T extends { id: string }>({
     if (search && searchBy.key) {
       await wait(300);
       const filterdData = data.filter((x) =>
-        (x[searchBy.key] as string).toLowerCase().includes(search.toLowerCase())
+        toLower(x[searchBy.key] as string).includes(toLower(search))
       );
       setFilterdData(filterdData);
     } else setFilterdData(data);
@@ -72,16 +80,22 @@ export function Table<T extends { id: string }>({
       name: option.label,
     });
 
+  const handleEdit = (row: T) => {
+    const filteredData = filterById(data, row.id);
+    setRowData(filteredData);
+  };
+
   return (
     <div>
       {filter && (
         <div className="flex justify-end">
-          <input
+          <Input
             type="search"
-            placeholder={`Type ${searchBy.name?.toLowerCase()}...`}
-            value={searchTerm}
+            placeholder={`Type ${toLower(searchBy.name ?? "")}...`}
+            styleClasses="shadow-none"
+            // value={searchTerm}
             onChange={handleChange}
-            className="bg-transparent rounded-lg mx-2 border-b-2 border-slate-400 border-opacity-35 shadow-lg outline-none px-2 py-1 text-md float-right"
+            // className="bg-transparent rounded-lg mx-2 border-b-2 border-slate-400 border-opacity-35 shadow-lg outline-none px-2 py-1 text-md float-right"
           />
           <div className="relative -top-3 min-w-32">
             <Select
@@ -120,14 +134,14 @@ export function Table<T extends { id: string }>({
                       className={`${styleClasses}  p-2 truncate`}
                       key={key.toString() + index}
                     >
-                      <>{item[key]}</>
+                      <>{rowData?.id === item.id ? <input /> : item[key]}</>
                     </td>
                   ))}
                   <td className="p-2 flex gap-3">
                     {onEdit && (
                       <img
                         className="h-5 cursor-pointer hover:opacity-50"
-                        onClick={() => onEdit(item)}
+                        onClick={() => handleEdit(item)}
                         src={EditIcon}
                         alt="Edit record"
                       />

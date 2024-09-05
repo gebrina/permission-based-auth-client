@@ -33,3 +33,8 @@ export const wait = (ms: number): Promise<void> =>
   });
 
 export const toLower = (value: string) => value.toLowerCase();
+
+export const filterById = <T extends { id: string }>(data: T[], id: string) => {
+  const filteredData = data.find((item) => item.id === id);
+  return filteredData;
+};

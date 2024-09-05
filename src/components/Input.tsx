@@ -1,12 +1,15 @@
 import { ChangeEvent, FC, FocusEvent, useId } from "react";
+import { twMerge } from "tailwind-merge";
 
 type TInputProps = {
-  type: string;
-  label: string;
-  name: string;
+  type?: string;
+  styleClasses?: string;
+  placeholder?: string;
+  label?: string;
+  name?: string;
   errorMessage?: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  onBlur: (event: FocusEvent<HTMLInputElement, HTMLElement>) => void;
+  onBlur?: (event: FocusEvent<HTMLInputElement, HTMLElement>) => void;
 };
 
 export const Input: FC<TInputProps> = ({
@@ -14,23 +17,25 @@ export const Input: FC<TInputProps> = ({
   type,
   name,
   errorMessage,
+  placeholder,
+  styleClasses,
   onChange,
   onBlur,
 }) => {
   const inputId = useId();
+  const defaultStyle = `
+     border-none rounded outline-none bg-transparent
+    shadow-sm shadow-slate-300 py-1 md:py-2 px-3
+  `;
+  const classnames = twMerge(defaultStyle, styleClasses);
 
   return (
     <div className="flex flex-col gap-2  text-lg relative">
       <label htmlFor={inputId}>{label}</label>
       <input
         autoComplete="off"
-        className="border-none rounded outline-none bg-transparent
-         shadow-sm
-         shadow-slate-300
-         py-1
-         md:py-2
-         px-3
-        "
+        placeholder={placeholder}
+        className={classnames}
         id={inputId}
         type={type}
         name={name}

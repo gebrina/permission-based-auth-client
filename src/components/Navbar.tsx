@@ -71,7 +71,7 @@ export const Navbar = () => {
             onClick={handleMenuToggle}
             className={`
                  bg-gradient-to-r ${
-                   pathname === to && "from-slate-600"
+                   pathname === to && "from-slate-600 to-slate-800"
                  }  hover:from-slate-700 hover:to-slate-900 rounded transition-all  py-2 px-3
               ${
                 isSmallWindowWidth &&
