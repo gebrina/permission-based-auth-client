@@ -1,8 +1,9 @@
 import { ChangeEvent, Fragment, useState } from "react";
 import CancelIcon from "../assets/cancel.svg";
+import UpdateIcon from "../assets/check.svg";
+import ColumnIcon from "../assets/column.svg";
 import DeleteIcon from "../assets/delete.svg";
 import EditIcon from "../assets/edit.svg";
-import UpdateIcon from "../assets/update.svg";
 import { filterById, toLower, wait } from "../utils";
 import { Button, Input, Select, TOption } from "./";
 
@@ -29,12 +30,21 @@ export function Table<T extends { id: string }>({
   onEdit,
   filter,
 }: TTableProps<T>) {
-  const filterOptions: TOption[] = columns.map((col) => ({
+  const selectOptions: TOption[] = columns.map((col) => ({
     value: col.key.toString(),
     label: col.name ?? "",
   }));
 
-  const selectedOption = filterOptions.find(
+  const defaultColumnOptions = selectOptions.map((option, index) => ({
+    ...option,
+    icon:
+      index === 0 ? "" : <img src={UpdateIcon} className="h-8" alt="Shown" />,
+  }));
+
+  const [columnSelectOption, setColumnSelectOptions] =
+    useState(defaultColumnOptions);
+
+  const selectedOption = selectOptions.find(
     (x) => x.value === filter?.columnKey
   );
 
@@ -94,10 +104,33 @@ export function Table<T extends { id: string }>({
     console.log(event, rowData);
   };
 
+  const handleColumnOptionsSelect = (option: TOption) => {
+    const updatedColumnOptions = columnSelectOption.map((co) =>
+      co.label === option.label ? { ...co, icon: "" } : co
+    );
+    setColumnSelectOptions(updatedColumnOptions);
+  };
+
   return (
     <div className="overflow-x-auto overflow-y-hidden min-h-ful">
       {filter && (
-        <div className="flex justify-end">
+        <div className="flex justify-between">
+          <div className="self-end">
+            <img
+              src={ColumnIcon}
+              id="column-options"
+              className="h-6 cursor-pointer hover:opacity-80"
+              alt="column-options"
+            />
+            <Select
+              options={columnSelectOption}
+              targetId="column-options"
+              triggerId="column-options"
+              hideOnSelection={false}
+              onSelect={handleColumnOptionsSelect}
+              styleClass="max-w-36"
+            />
+          </div>
           <div className="flex">
             <Input
               type="search"
@@ -114,7 +147,7 @@ export function Table<T extends { id: string }>({
             />
           </div>
           <Select
-            options={filterOptions}
+            options={selectOptions}
             onSelect={handleSelect}
             selected={selectedOption}
             triggerId="filter-by-btn"

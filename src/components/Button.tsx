@@ -1,4 +1,5 @@
 import { FC, MouseEvent } from "react";
+import { twMerge } from "tailwind-merge";
 
 type ButtonVariant = "primary" | "secondary" | "teritiary";
 type TButtonProps = {
@@ -33,17 +34,14 @@ export const Button: FC<TButtonProps> = ({
   styleClass,
   onClick,
 }) => {
+  const classnames = twMerge(
+    `border-none py-2 text-xl rounded
+    ${getButtonStyle(variant)}`,
+    styleClass
+  );
+
   return (
-    <button
-      id={btnId ? btnId : ""}
-      onClick={onClick}
-      className={`
-       border-none
-       py-2
-       text-xl
-       rounded
-    ${getButtonStyle(variant)} ${styleClass}`}
-    >
+    <button id={btnId ? btnId : ""} onClick={onClick} className={classnames}>
       {label}
     </button>
   );
