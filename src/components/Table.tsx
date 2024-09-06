@@ -4,7 +4,7 @@ import DeleteIcon from "../assets/delete.svg";
 import EditIcon from "../assets/edit.svg";
 import UpdateIcon from "../assets/update.svg";
 import { filterById, toLower, wait } from "../utils";
-import { Input, Select, TOption } from "./";
+import { Button, Input, Select, TOption } from "./";
 
 export type THeader<T> = {
   name?: string;
@@ -95,23 +95,31 @@ export function Table<T extends { id: string }>({
   };
 
   return (
-    <div>
+    <div className="overflow-x-auto overflow-y-hidden min-h-ful">
       {filter && (
-        <div className="flex  justify-end">
-          <Input
-            type="search"
-            placeholder={`Type ${toLower(searchBy.name ?? "")}...`}
-            styleClasses="mb-1 relative shadow-slate-500"
-            onChange={handleChange}
-          />
-          <div className="relative ml-2  min-w-32">
-            <Select
-              selectLabel="Filter by..."
-              options={filterOptions}
-              onSelect={handleSelect}
-              selected={selectedOption}
+        <div className="flex justify-end">
+          <div className="flex">
+            <Input
+              type="search"
+              placeholder={`Type ${toLower(searchBy.name ?? "")}...`}
+              styleClasses="mb-1 relative shadow-slate-500"
+              onChange={handleChange}
+            />
+            <Button
+              btnId="filter-by-btn"
+              styleClass="px-2 min-w-32 from-slate-900 to-slate-600 rounded-lg hover:from-slate-900 hover:to-slate-700"
+              label="Filter by..."
+              onClick={(e) => e?.stopPropagation()}
+              variant="primary"
             />
           </div>
+          <Select
+            options={filterOptions}
+            onSelect={handleSelect}
+            selected={selectedOption}
+            triggerId="filter-by-btn"
+            targetId="filter-by-btn"
+          />
         </div>
       )}
       <table className="w-full bg-slate-200 bg-opacity-10">

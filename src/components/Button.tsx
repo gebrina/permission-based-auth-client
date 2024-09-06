@@ -1,10 +1,11 @@
-import { FC } from "react";
+import { FC, MouseEvent } from "react";
 
 type ButtonVariant = "primary" | "secondary" | "teritiary";
 type TButtonProps = {
   variant: ButtonVariant;
+  btnId?: string;
   styleClass?: string;
-  onClick?: () => void;
+  onClick?: (event?: MouseEvent<HTMLButtonElement>) => void;
   label: string;
 };
 
@@ -28,11 +29,13 @@ const getButtonStyle = (variant: ButtonVariant) => {
 export const Button: FC<TButtonProps> = ({
   variant,
   label,
+  btnId,
   styleClass,
   onClick,
 }) => {
   return (
     <button
+      id={btnId ? btnId : ""}
       onClick={onClick}
       className={`
        border-none
