@@ -128,7 +128,7 @@ export function Table<T extends { id: string }>({
     event: ChangeEvent<HTMLInputElement>,
     rowData: T
   ) => {
-    console.log(event, rowData);
+    console.log(event.target.value, rowData);
   };
 
   const updateSelectColumnIcon = (icon: ReactElement) => {
@@ -241,7 +241,7 @@ export function Table<T extends { id: string }>({
                           {rowData?.id === item.id && edit ? (
                             <Input
                               type="text"
-                              value={rowData[key]?.toString() ?? ""}
+                              defaultValue={rowData[key]?.toString() ?? ""}
                               onChange={(event) =>
                                 handleTDInputChange(event, item)
                               }

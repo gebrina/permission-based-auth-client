@@ -2,7 +2,7 @@ import { ChangeEvent, FC, FocusEvent, useId } from "react";
 import { twMerge } from "tailwind-merge";
 
 type TInputProps = {
-  value?: string;
+  defaultValue?: string;
   label?: string;
   name?: string;
   type?: string;
@@ -14,7 +14,7 @@ type TInputProps = {
 };
 
 export const Input: FC<TInputProps> = ({
-  value,
+  defaultValue,
   label,
   name,
   type,
@@ -36,7 +36,7 @@ export const Input: FC<TInputProps> = ({
       <label htmlFor={inputId}>{label}</label>
       <input
         autoComplete="off"
-        value={value}
+        defaultValue={defaultValue}
         placeholder={placeholder}
         className={classnames}
         id={inputId}
