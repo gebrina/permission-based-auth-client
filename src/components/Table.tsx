@@ -10,7 +10,7 @@ import UpdateIcon from "../assets/check.svg";
 import ColumnIcon from "../assets/column.svg";
 import DeleteIcon from "../assets/delete.svg";
 import EditIcon from "../assets/edit.svg";
-import { filterById, toLower, wait } from "../utils";
+import { toLower, wait } from "../utils";
 import { Button, Input, Select, TOption } from "./";
 
 export type THeader<T> = {
@@ -68,7 +68,7 @@ export function Table<T extends { id: string }>({
     columns[0].name;
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [rowData, setRowData] = useState<(typeof data)[0]>();
+  const [rowData, setRowData] = useState<T>();
   const [searchBy, setSearchBy] = useState({
     key: defaultFilterKey,
     name: defaultFilterName,
@@ -114,9 +114,15 @@ export function Table<T extends { id: string }>({
     });
 
   const handleEdit = (row: T) => {
-    setEdit(true);
-    const filteredData = filterById(data, row.id);
-    setRowData(filteredData);
+    if (!rowData) {
+      setEdit(true);
+      setRowData(row);
+      onEdit?.(row);
+    } else {
+      setEdit(false);
+      onEdit?.(rowData);
+      setRowData(undefined);
+    }
   };
 
   const handleCancel = () => {
@@ -124,11 +130,12 @@ export function Table<T extends { id: string }>({
     setRowData({ id: "" } as T);
   };
 
-  const handleTDInputChange = (
-    event: ChangeEvent<HTMLInputElement>,
-    rowData: T
-  ) => {
-    console.log(event.target.value, rowData);
+  const handleTDInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const input = event.target;
+    const key = input.getAttribute("name") as keyof T;
+    if (rowData) {
+      rowData[key] = input.value as T[keyof T];
+    }
   };
 
   const updateSelectColumnIcon = (icon: ReactElement) => {
@@ -241,10 +248,9 @@ export function Table<T extends { id: string }>({
                           {rowData?.id === item.id && edit ? (
                             <Input
                               type="text"
+                              name={key.toString()}
                               defaultValue={rowData[key]?.toString() ?? ""}
-                              onChange={(event) =>
-                                handleTDInputChange(event, item)
-                              }
+                              onChange={handleTDInputChange}
                               styleClasses="bg-slate-500  bg-opacity-50 w-full h-10"
                             />
                           ) : (
