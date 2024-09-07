@@ -94,15 +94,14 @@ export const Select: FC<TSelectProps> = ({
               {label && (
                 <div
                   onClick={() => handleSelect({ value, label })}
-                  className={`flex  items-center cursor-pointer hover:bg-orange-700 p-2 ${
+                  className={` ${
+                    icon && " flex justify-start items-center gap-2"
+                  }
+                  cursor-pointer hover:bg-orange-700 p-2 ${
                     index === options.length - 1 && "rounded-b-lg"
                   }
                   ${index === 1 && "rounded-t-lg"}
-                  ${
-                    selectedOption &&
-                    selectedOption.value === value &&
-                    "bg-orange-600"
-                  }
+                  ${selectedOption?.value === value && "bg-orange-600"}
                   `}
                 >
                   {icon && icon} {label}

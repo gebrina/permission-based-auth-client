@@ -1,4 +1,4 @@
-import { ChangeEvent, Fragment, useState } from "react";
+import { ChangeEvent, Fragment, ReactElement, useState } from "react";
 import CancelIcon from "../assets/cancel.svg";
 import UpdateIcon from "../assets/check.svg";
 import ColumnIcon from "../assets/column.svg";
@@ -35,10 +35,10 @@ export function Table<T extends { id: string }>({
     label: col.name ?? "",
   }));
 
+  const shownColumIcon = <img src={UpdateIcon} className="h-6" alt="Shown" />;
   const defaultColumnOptions = selectOptions.map((option, index) => ({
     ...option,
-    icon:
-      index === 0 ? "" : <img src={UpdateIcon} className="h-8" alt="Shown" />,
+    icon: index !== 0 && shownColumIcon,
   }));
 
   const [columnSelectOption, setColumnSelectOptions] =
@@ -104,9 +104,31 @@ export function Table<T extends { id: string }>({
     console.log(event, rowData);
   };
 
+  const updateSelectColumnIcon = (icon: ReactElement) => {
+    const hiddenColumIcon = (
+      <img
+        className="h-4 w-6 mix-blend-difference"
+        src={CancelIcon}
+        alt="Hidden column"
+      />
+    );
+
+    const updatedIcon =
+      icon.props?.src === shownColumIcon.props?.src
+        ? hiddenColumIcon
+        : shownColumIcon;
+
+    return updatedIcon;
+  };
+
   const handleColumnOptionsSelect = (option: TOption) => {
     const updatedColumnOptions = columnSelectOption.map((co) =>
-      co.label === option.label ? { ...co, icon: "" } : co
+      co.label === option.label
+        ? {
+            ...co,
+            icon: updateSelectColumnIcon(co.icon as ReactElement),
+          }
+        : co
     );
     setColumnSelectOptions(updatedColumnOptions);
   };
