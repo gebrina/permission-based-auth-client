@@ -1,4 +1,10 @@
-import { ChangeEvent, Fragment, ReactElement, useState } from "react";
+import {
+  ChangeEvent,
+  Fragment,
+  ReactElement,
+  useEffect,
+  useState,
+} from "react";
 import CancelIcon from "../assets/cancel.svg";
 import UpdateIcon from "../assets/check.svg";
 import ColumnIcon from "../assets/column.svg";
@@ -36,6 +42,14 @@ export function Table<T extends { id: string }>({
   }));
 
   const shownColumIcon = <img src={UpdateIcon} className="h-6" alt="Shown" />;
+  const hiddenColumIcon = (
+    <img
+      className="h-4 w-6 mix-blend-difference"
+      src={CancelIcon}
+      alt="Hidden"
+    />
+  );
+
   const defaultColumnOptions = selectOptions.map((option, index) => ({
     ...option,
     icon: index !== 0 && shownColumIcon,
@@ -61,6 +75,19 @@ export function Table<T extends { id: string }>({
   });
   const [filteredData, setFilterdData] = useState(data);
   const [edit, setEdit] = useState(false);
+  const [shownColumns, setShownColumns] = useState(columns);
+  const [showAcitonsColumn, setShowActionsColumn] = useState(true);
+
+  useEffect(() => {
+    const areAllColumnsRemoved = shownColumns.every(
+      (col) => !!col.name === false
+    );
+    if (areAllColumnsRemoved) {
+      setShowActionsColumn(false);
+    } else {
+      setShowActionsColumn(true);
+    }
+  }, [shownColumns]);
 
   const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const {
@@ -105,14 +132,6 @@ export function Table<T extends { id: string }>({
   };
 
   const updateSelectColumnIcon = (icon: ReactElement) => {
-    const hiddenColumIcon = (
-      <img
-        className="h-4 w-6 mix-blend-difference"
-        src={CancelIcon}
-        alt="Hidden column"
-      />
-    );
-
     const updatedIcon =
       icon.props?.src === shownColumIcon.props?.src
         ? hiddenColumIcon
@@ -130,17 +149,29 @@ export function Table<T extends { id: string }>({
           }
         : co
     );
+
+    const showColumns = updatedColumnOptions
+      .filter(
+        (co) =>
+          (co.icon as ReactElement).props?.src !== hiddenColumIcon.props?.src
+      )
+      .map(({ value, label }) => ({
+        key: value as keyof T,
+        name: label,
+      }));
+
     setColumnSelectOptions(updatedColumnOptions);
+    setShownColumns(showColumns);
   };
 
   return (
     <div className="overflow-x-auto overflow-y-hidden min-h-ful">
       {filter && (
-        <div className="flex justify-between">
-          <div className="self-end">
+        <div className="flex items-end justify-between gap-2">
+          <div className="bg-gradient-to-tr from-slate-900 h-10 flex items-center p-2 rounded-lg hover:bg-opacity-70">
             <img
-              src={ColumnIcon}
               id="column-options"
+              src={ColumnIcon}
               className="h-6 cursor-pointer hover:opacity-80"
               alt="column-options"
             />
@@ -153,11 +184,11 @@ export function Table<T extends { id: string }>({
               styleClass="max-w-36"
             />
           </div>
-          <div className="flex">
+          <div className="flex justify-end">
             <Input
               type="search"
               placeholder={`Type ${toLower(searchBy.name ?? "")}...`}
-              styleClasses="mb-1 relative shadow-slate-500"
+              styleClasses="mb-1 relative w-full shadow-slate-500"
               onChange={handleChange}
             />
             <Button
@@ -177,10 +208,10 @@ export function Table<T extends { id: string }>({
           />
         </div>
       )}
-      <table className="w-full bg-slate-200 bg-opacity-10">
+      <table className="w-full bg-slate-200  bg-opacity-10">
         <thead>
           <tr>
-            {columns.map(({ key, name, styleClasses }) => (
+            {shownColumns.map(({ key, name, styleClasses }) => (
               <Fragment key={key.toString()}>
                 {name && (
                   <th
@@ -192,70 +223,73 @@ export function Table<T extends { id: string }>({
                 )}
               </Fragment>
             ))}
-            <th>Actions</th>
+            {showAcitonsColumn && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
           {filteredData.length > 0
             ? filteredData.map((item) => (
                 <tr className="border-y border-slate-400" key={item.id}>
-                  {columns.map(({ key, styleClasses }, index) => (
-                    <td
-                      className={`${styleClasses} p-2 ${
-                        edit && item.id === rowData?.id && "pb-3"
-                      }`}
-                      key={key.toString() + index}
-                    >
-                      <>
-                        {rowData?.id === item.id && edit ? (
-                          <Input
-                            type="text"
-                            value={rowData[key]?.toString() ?? ""}
-                            onChange={(event) =>
-                              handleTDInputChange(event, item)
-                            }
-                            styleClasses="bg-slate-500  bg-opacity-50 w-full h-10"
-                          />
-                        ) : (
-                          item[key]
-                        )}
-                      </>
-                    </td>
-                  ))}
-                  <td className={`p-2`}>
-                    <div className="flex items-center justify-center gap-4">
-                      {onEdit && (
-                        <div className="flex items-center">
-                          <img
-                            className="h-8 cursor-pointer mix-blend-screen hover:opacity-50"
-                            src={
-                              edit && rowData?.id === item.id
-                                ? UpdateIcon
-                                : EditIcon
-                            }
-                            alt="Edit record"
-                            onClick={() => handleEdit(item)}
-                          />
-                          {edit && rowData?.id === item.id && (
-                            <img
-                              className="h-4 mix-blend-difference cursor-pointer hover:opacity-50"
-                              alt="Cancel editing"
-                              src={CancelIcon}
-                              onClick={handleCancel}
+                  {shownColumns.map(({ key, name, styleClasses }, index) => (
+                    <Fragment key={key.toString() + index}>
+                      {name && (
+                        <td
+                          className={`${styleClasses} p-2 ${
+                            edit && item.id === rowData?.id && "pb-3"
+                          }`}
+                        >
+                          {rowData?.id === item.id && edit ? (
+                            <Input
+                              type="text"
+                              value={rowData[key]?.toString() ?? ""}
+                              onChange={(event) =>
+                                handleTDInputChange(event, item)
+                              }
+                              styleClasses="bg-slate-500  bg-opacity-50 w-full h-10"
                             />
+                          ) : (
+                            <>{item[key]}</>
                           )}
-                        </div>
+                        </td>
                       )}
-                      {onDelete && (
-                        <img
-                          className="h-5 mix-blend-screen cursor-pointer hover:opacity-50"
-                          alt="Delete  record"
-                          src={DeleteIcon}
-                          onClick={() => onDelete(item.id)}
-                        />
-                      )}
-                    </div>
-                  </td>
+                    </Fragment>
+                  ))}
+                  {showAcitonsColumn && (
+                    <td className={`p-2`}>
+                      <div className="flex items-center justify-center gap-4">
+                        {onEdit && (
+                          <div className="flex items-center">
+                            <img
+                              className="h-8 cursor-pointer mix-blend-screen hover:opacity-50"
+                              src={
+                                edit && rowData?.id === item.id
+                                  ? UpdateIcon
+                                  : EditIcon
+                              }
+                              alt="Edit record"
+                              onClick={() => handleEdit(item)}
+                            />
+                            {edit && rowData?.id === item.id && (
+                              <img
+                                className="h-4 mix-blend-difference cursor-pointer hover:opacity-50"
+                                alt="Cancel editing"
+                                src={CancelIcon}
+                                onClick={handleCancel}
+                              />
+                            )}
+                          </div>
+                        )}
+                        {onDelete && (
+                          <img
+                            className="h-5 mix-blend-screen cursor-pointer hover:opacity-50"
+                            alt="Delete  record"
+                            src={DeleteIcon}
+                            onClick={() => onDelete(item.id)}
+                          />
+                        )}
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))
             : searchTerm && (

@@ -47,8 +47,8 @@ export const Users = () => {
   if (isLoading)
     return <Loader classStyles="absolute  left-[25%]  top-[25%]" />;
 
-  const handleDelete = (rowId: string) => {};
-  const handleEdit = (rowData: User) => {};
+  const handleDelete = (rowId: string) => console.log(rowId);
+  const handleEdit = (rowData: User) => console.log(rowData);
 
   return (
     <>
