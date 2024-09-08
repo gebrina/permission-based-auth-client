@@ -76,7 +76,8 @@ export function Table<T extends { id: string }>({
   });
   const [filteredData, setFilterdData] = useState(data);
   const [shownColumns, setShownColumns] = useState(columns);
-  const [showActionColumn, setShowActionsColumn] = useState(true);
+  const [showActionsColumn, setShowActionsColumn] = useState(true);
+  const [addRow, setAddRow] = useState(false);
 
   useEffect(() => {
     const areAllColumnsRemoved = shownColumns.every(
@@ -123,6 +124,10 @@ export function Table<T extends { id: string }>({
   };
 
   const handleCancel = () => setRowData(undefined);
+
+  const handleAddRow = () => {
+    setAddRow(true);
+  };
 
   const handleTDInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const input = event.target;
@@ -211,8 +216,9 @@ export function Table<T extends { id: string }>({
         )}
         <img
           src={PlusIcon}
-          className="h-5 m-1 cursor-pointer hover:opacity-70"
+          className="h-5 mb-3 cursor-pointer hover:opacity-70"
           alt="Add new record"
+          onClick={handleAddRow}
         />
       </div>
       <table className="w-full bg-slate-200  bg-opacity-10">
@@ -230,12 +236,12 @@ export function Table<T extends { id: string }>({
                 )}
               </Fragment>
             ))}
-            {showActionColumn && <th>Actions</th>}
+            {showActionsColumn && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
           {filteredData.length > 0
-            ? filteredData.map((item) => (
+            ? filteredData.map((item, itemIndex) => (
                 <tr className="border-y border-slate-400" key={item.id}>
                   {shownColumns.map(({ key, name, styleClasses }, index) => (
                     <Fragment key={key.toString() + index}>
@@ -253,6 +259,16 @@ export function Table<T extends { id: string }>({
                               onChange={handleTDInputChange}
                               styleClasses="bg-slate-500  bg-opacity-50 w-full h-10"
                             />
+                          ) : addRow && itemIndex === 0 ? (
+                            <>
+                              <Input
+                                type="text"
+                                placeholder={name}
+                                name={key.toString()}
+                                onChange={() => {}}
+                                styleClasses="bg-slate-500 bg-opacity-50 w-full h-10"
+                              />
+                            </>
                           ) : (
                             <>{item[key]}</>
                           )}
@@ -260,7 +276,7 @@ export function Table<T extends { id: string }>({
                       )}
                     </Fragment>
                   ))}
-                  {showActionColumn && (
+                  {showActionsColumn && (
                     <td className={`p-2`}>
                       <div className="flex items-center justify-center gap-3 min-w-24">
                         {onEdit && (
