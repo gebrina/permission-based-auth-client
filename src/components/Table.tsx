@@ -25,6 +25,7 @@ type TTableProps<T> = {
   columns: THeader<T>[];
   onDelete?: (rowId: string) => void;
   onEdit?: (rowData: T) => void;
+  onAdd?: (rowData: T) => void;
   filter?: {
     columnKey?: keyof T;
   };
@@ -35,6 +36,7 @@ export function Table<T extends { id: string }>({
   columns,
   onDelete,
   onEdit,
+  onAdd,
   filter,
 }: TTableProps<T>) {
   const selectOptions: TOption[] = columns.map((col) => ({
@@ -74,7 +76,7 @@ export function Table<T extends { id: string }>({
     key: defaultFilterKey,
     name: defaultFilterName,
   });
-  const [filteredData, setFilterdData] = useState(data);
+  const [filteredData, setFilteredData] = useState(data);
   const [shownColumns, setShownColumns] = useState(columns);
   const [showActionsColumn, setShowActionsColumn] = useState(true);
   const [addRow, setAddRow] = useState(false);
@@ -101,11 +103,11 @@ export function Table<T extends { id: string }>({
   const filterTableData = async (search: string) => {
     if (search && searchBy.key) {
       await wait(300);
-      const filterdData = data.filter((x) =>
+      const filteredData = data.filter((x) =>
         toLower(x[searchBy.key] as string).includes(toLower(search))
       );
-      setFilterdData(filterdData);
-    } else setFilterdData(data);
+      setFilteredData(filteredData);
+    } else setFilteredData(data);
   };
 
   const handleSelect = (option: TOption) =>
@@ -123,9 +125,21 @@ export function Table<T extends { id: string }>({
     }
   };
 
-  const handleCancel = () => setRowData(undefined);
+  const handleCancel = () => {
+    rowData && setRowData(undefined);
+    if (addRow) {
+      setAddRow(false);
+      // When user cancels adding record reset data back to the original
+      setFilteredData(data);
+    }
+  };
 
   const handleAddRow = () => {
+    // add new item with some sample data
+    const tempData: T = {
+      id: "",
+    } as T;
+    setFilteredData([tempData, ...filteredData]);
     setAddRow(true);
   };
 
@@ -279,32 +293,40 @@ export function Table<T extends { id: string }>({
                   {showActionsColumn && (
                     <td className={`p-2`}>
                       <div className="flex items-center justify-center gap-3 min-w-24">
-                        {onEdit && (
-                          <div className="flex items-center">
-                            <img
-                              className="h-8 cursor-pointer mix-blend-screen hover:opacity-50"
-                              src={
-                                rowData?.id === item.id ? UpdateIcon : EditIcon
-                              }
-                              alt="Edit record"
-                              onClick={() => handleEdit(item)}
-                            />
-                            {rowData?.id === item.id && (
+                        {addRow && itemIndex === 0 ? (
+                          <div></div>
+                        ) : (
+                          <>
+                            {onEdit && (
                               <img
-                                className="h-4 mix-blend-difference cursor-pointer hover:opacity-50"
-                                alt="Cancel editing"
-                                src={CancelIcon}
-                                onClick={handleCancel}
+                                className="h-8 cursor-pointer mix-blend-screen hover:opacity-50"
+                                src={
+                                  rowData?.id === item.id
+                                    ? UpdateIcon
+                                    : EditIcon
+                                }
+                                alt="Edit record"
+                                onClick={() => handleEdit(item)}
                               />
                             )}
-                          </div>
+
+                            {onDelete && (
+                              <img
+                                className="h-5 order-2 mix-blend-screen cursor-pointer hover:opacity-50"
+                                alt="Delete a record"
+                                src={DeleteIcon}
+                                onClick={() => onDelete(item.id)}
+                              />
+                            )}
+                          </>
                         )}
-                        {onDelete && (
+                        {(rowData?.id === item.id ||
+                          (addRow && itemIndex === 0)) && (
                           <img
-                            className="h-5 mix-blend-screen cursor-pointer hover:opacity-50"
-                            alt="Delete  record"
-                            src={DeleteIcon}
-                            onClick={() => onDelete(item.id)}
+                            className="h-4 order-1 mix-blend-difference cursor-pointer hover:opacity-50"
+                            alt="Cancel editing"
+                            src={CancelIcon}
+                            onClick={handleCancel}
                           />
                         )}
                       </div>
