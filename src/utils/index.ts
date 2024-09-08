@@ -38,3 +38,14 @@ export const filterById = <T extends { id: string }>(data: T[], id: string) => {
   const filteredData = data.find((item) => item.id === id);
   return filteredData;
 };
+
+export const storeData = <T>(storageKey: string, datas: T[]): void => {
+  const datasJson = JSON.stringify(datas);
+  localStorage.setItem(storageKey, datasJson);
+};
+
+export const getDatas = <T>(storageKey: string): T[] | undefined => {
+  const data = localStorage.getItem(storageKey);
+  if (data) return JSON.parse(data);
+  return undefined;
+};

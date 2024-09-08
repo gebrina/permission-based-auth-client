@@ -74,7 +74,6 @@ export function Table<T extends { id: string }>({
     name: defaultFilterName,
   });
   const [filteredData, setFilterdData] = useState(data);
-  const [edit, setEdit] = useState(false);
   const [shownColumns, setShownColumns] = useState(columns);
   const [showAcitonsColumn, setShowActionsColumn] = useState(true);
 
@@ -115,20 +114,14 @@ export function Table<T extends { id: string }>({
 
   const handleEdit = (row: T) => {
     if (!rowData) {
-      setEdit(true);
       setRowData(row);
-      onEdit?.(row);
     } else {
-      setEdit(false);
       onEdit?.(rowData);
       setRowData(undefined);
     }
   };
 
-  const handleCancel = () => {
-    setEdit(false);
-    setRowData({ id: "" } as T);
-  };
+  const handleCancel = () => setRowData(undefined);
 
   const handleTDInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const input = event.target;
@@ -242,10 +235,10 @@ export function Table<T extends { id: string }>({
                       {name && (
                         <td
                           className={`${styleClasses} p-2 ${
-                            edit && item.id === rowData?.id && "pb-3"
+                            item.id === rowData?.id && "pb-3"
                           }`}
                         >
-                          {rowData?.id === item.id && edit ? (
+                          {rowData?.id === item.id ? (
                             <Input
                               type="text"
                               name={key.toString()}
@@ -268,14 +261,12 @@ export function Table<T extends { id: string }>({
                             <img
                               className="h-8 cursor-pointer mix-blend-screen hover:opacity-50"
                               src={
-                                edit && rowData?.id === item.id
-                                  ? UpdateIcon
-                                  : EditIcon
+                                rowData?.id === item.id ? UpdateIcon : EditIcon
                               }
                               alt="Edit record"
                               onClick={() => handleEdit(item)}
                             />
-                            {edit && rowData?.id === item.id && (
+                            {rowData?.id === item.id && (
                               <img
                                 className="h-4 mix-blend-difference cursor-pointer hover:opacity-50"
                                 alt="Cancel editing"

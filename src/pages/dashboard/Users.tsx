@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAll } from "../../api/Requests";
+import { getAll, update } from "../../api/Requests";
 import { Loader, Notification } from "../../components";
 import { Header } from "../../components/Header";
 import { Table, THeader } from "../../components/Table";
@@ -48,7 +48,12 @@ export const Users = () => {
     return <Loader classStyles="absolute  left-[25%]  top-[25%]" />;
 
   const handleDelete = (rowId: string) => console.log(rowId);
-  const handleEdit = (rowData: User) => console.log(rowData);
+  const handleEdit = (rowData: User) =>
+    update<User>("users", rowData)
+      .then((res) => {
+        console.log("update response", res);
+      })
+      .catch((err) => console.error("update response", err));
 
   return (
     <>
