@@ -76,7 +76,7 @@ export function Table<T extends { id: string }>({
   });
   const [filteredData, setFilterdData] = useState(data);
   const [shownColumns, setShownColumns] = useState(columns);
-  const [showAcitonsColumn, setShowActionsColumn] = useState(true);
+  const [showActionColumn, setShowActionsColumn] = useState(true);
 
   useEffect(() => {
     const areAllColumnsRemoved = shownColumns.every(
@@ -211,7 +211,7 @@ export function Table<T extends { id: string }>({
         )}
         <img
           src={PlusIcon}
-          className="h-5 cursor-pointer hover:opacity-70"
+          className="h-5 m-1 cursor-pointer hover:opacity-70"
           alt="Add new record"
         />
       </div>
@@ -230,7 +230,7 @@ export function Table<T extends { id: string }>({
                 )}
               </Fragment>
             ))}
-            {showAcitonsColumn && <th>Actions</th>}
+            {showActionColumn && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
@@ -260,7 +260,7 @@ export function Table<T extends { id: string }>({
                       )}
                     </Fragment>
                   ))}
-                  {showAcitonsColumn && (
+                  {showActionColumn && (
                     <td className={`p-2`}>
                       <div className="flex items-center justify-center gap-3 min-w-24">
                         {onEdit && (
