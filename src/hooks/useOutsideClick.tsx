@@ -1,15 +1,22 @@
-import { FC, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type TProps = {
   element: HTMLElement;
 };
 
-export const useOutsideClick: FC<TProps> = ({ element }): boolean => {
+export const useOutsideClick = ({
+  element,
+}: TProps): {
+  isOutsideClick: boolean;
+  clickedElement: HTMLElement;
+} => {
   const [isOutsideClick, setIsOutsideClick] = useState(false);
+  const clickedElmentRef = useRef<HTMLElement>(document.body);
 
   useEffect(() => {
     const handleDocumentClick = (event: Event) => {
       const clickedElement = event.target as HTMLElement;
+      clickedElmentRef.current = clickedElement;
       if (element?.contains(clickedElement)) setIsOutsideClick(false);
       else setIsOutsideClick(true);
     };
@@ -19,5 +26,8 @@ export const useOutsideClick: FC<TProps> = ({ element }): boolean => {
     return () => document.removeEventListener("click", handleDocumentClick);
   });
 
-  return isOutsideClick;
+  return {
+    isOutsideClick,
+    clickedElement: clickedElmentRef.current,
+  };
 };

@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import { twMerge } from "tailwind-merge";
+import { useOutsideClick } from "../hooks/useOutsideClick";
 
 export type TOption = {
   value: string;
@@ -42,6 +43,10 @@ export const Select: FC<TSelectProps> = ({
   );
 
   const selectRef = useRef<HTMLDivElement | null>(null);
+  const { isOutsideClick, clickedElement } = useOutsideClick({
+    element: selectRef.current!,
+  });
+
   const classnames = twMerge(`fixed z-50 w-full rounded-lg`, styleClass);
 
   const handleToggleOpenMenu = useCallback(
@@ -70,6 +75,13 @@ export const Select: FC<TSelectProps> = ({
     return () =>
       triggerElement.removeEventListener("click", handletTriggerElementClick);
   }, [triggerId, targetId, handleToggleOpenMenu]);
+
+  useEffect(() => {
+    if (clickedElement && isOutsideClick) {
+      const elementId = clickedElement.getAttribute("id");
+      elementId !== triggerId && setOpenMenu(false);
+    }
+  }, [clickedElement, isOutsideClick, triggerId]);
 
   const handleSelect = (option: TOption) => {
     setSelectedOption(option);

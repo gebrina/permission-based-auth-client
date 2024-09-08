@@ -8,7 +8,7 @@ import { isMobile } from "../utils";
 
 export const Navbar = () => {
   const navbarRef = useRef<HTMLDivElement | null>(null);
-  const isOutSideClick = useOutsideClick({
+  const { isOutsideClick } = useOutsideClick({
     element: navbarRef.current as HTMLElement,
   });
 
@@ -31,8 +31,8 @@ export const Navbar = () => {
   });
 
   useEffect(() => {
-    isOutSideClick && setShowMenu(false);
-  }, [isOutSideClick]);
+    isOutsideClick && setShowMenu(false);
+  }, [isOutsideClick]);
 
   const handleMenuToggle = () => setShowMenu(!showMenu);
 
