@@ -48,12 +48,13 @@ export const Users = () => {
     return <Loader classStyles="absolute  left-[25%]  top-[25%]" />;
 
   const handleDelete = (rowId: string) => console.log(rowId);
+
   const handleEdit = (rowData: User) =>
     update<User>("users", rowData)
       .then((res) => {
         console.log("update response", res);
       })
-      .catch((err) => console.error("update response", err));
+      .catch((err) => setErrorMessage(err.message));
 
   return (
     <>

@@ -10,6 +10,7 @@ import UpdateIcon from "../assets/check.svg";
 import ColumnIcon from "../assets/column.svg";
 import DeleteIcon from "../assets/delete.svg";
 import EditIcon from "../assets/edit.svg";
+import PlusIcon from "../assets/plus.svg";
 import { toLower, wait } from "../utils";
 import { Button, Input, Select, TOption } from "./";
 
@@ -166,25 +167,26 @@ export function Table<T extends { id: string }>({
 
   return (
     <div className="overflow-x-auto overflow-y-hidden min-h-ful">
-      {filter && (
-        <div className="flex items-end justify-between gap-2">
-          <div className="bg-gradient-to-tr from-slate-900 h-10 flex items-center p-2 rounded-lg hover:bg-opacity-70">
-            <img
-              id="column-options"
-              src={ColumnIcon}
-              className="h-6 cursor-pointer hover:opacity-80"
-              alt="column-options"
-            />
-            <Select
-              options={columnSelectOption}
-              targetId="column-options"
-              triggerId="column-options"
-              hideOnSelection={false}
-              onSelect={handleColumnOptionsSelect}
-              styleClass="max-w-36"
-            />
-          </div>
-          <div className="flex justify-end">
+      <div className="flex  items-end justify-between gap-2">
+        <div className="bg-gradient-to-tr from-slate-900 h-10 flex items-center p-2 rounded-lg hover:bg-opacity-70">
+          <img
+            id="column-options"
+            src={ColumnIcon}
+            className="h-5 sm:h-4 cursor-pointer hover:opacity-80"
+            alt="column-options"
+          />
+          <Select
+            options={columnSelectOption}
+            targetId="column-options"
+            triggerId="column-options"
+            hideOnSelection={false}
+            onSelect={handleColumnOptionsSelect}
+            styleClass="max-w-36"
+          />
+        </div>
+
+        {filter && (
+          <div className="flex items-end justify-end">
             <Input
               type="search"
               placeholder={`Type ${toLower(searchBy.name ?? "")}...`}
@@ -193,21 +195,26 @@ export function Table<T extends { id: string }>({
             />
             <Button
               btnId="filter-by-btn"
-              styleClass="px-2 min-w-32 from-slate-900 to-slate-600 rounded-lg hover:from-slate-900 hover:to-slate-700"
+              styleClass="text-lg px-2 py-1 text-left from-slate-900 to-slate-600 rounded-lg hover:from-slate-900 hover:to-slate-700"
               label="Filter by..."
-              onClick={(e) => e?.stopPropagation()}
+              onClick={(e) => e?.preventDefault()}
               variant="primary"
             />
+            <Select
+              options={selectOptions}
+              onSelect={handleSelect}
+              selected={selectedOption}
+              triggerId="filter-by-btn"
+              targetId="filter-by-btn"
+            />
           </div>
-          <Select
-            options={selectOptions}
-            onSelect={handleSelect}
-            selected={selectedOption}
-            triggerId="filter-by-btn"
-            targetId="filter-by-btn"
-          />
-        </div>
-      )}
+        )}
+        <img
+          src={PlusIcon}
+          className="h-5 cursor-pointer hover:opacity-70"
+          alt="Add new record"
+        />
+      </div>
       <table className="w-full bg-slate-200  bg-opacity-10">
         <thead>
           <tr>
@@ -234,8 +241,8 @@ export function Table<T extends { id: string }>({
                     <Fragment key={key.toString() + index}>
                       {name && (
                         <td
-                          className={`${styleClasses} p-2 ${
-                            item.id === rowData?.id && "pb-3"
+                          className={`${styleClasses ?? ""} p-2 ${
+                            item.id === rowData?.id ? "pb-3" : ""
                           }`}
                         >
                           {rowData?.id === item.id ? (

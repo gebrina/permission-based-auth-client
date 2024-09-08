@@ -37,15 +37,15 @@ export const Select: FC<TSelectProps> = ({
   hideOnSelection = true,
   onSelect,
 }) => {
-  const [openMenu, setOpenMenu] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<TOption | undefined>(
-    selected
-  );
-
   const selectRef = useRef<HTMLDivElement | null>(null);
   const { isOutsideClick, clickedElement } = useOutsideClick({
     element: selectRef.current!,
   });
+
+  const [openMenu, setOpenMenu] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<TOption | undefined>(
+    selected
+  );
 
   const classnames = twMerge(`fixed z-50 w-full rounded-lg`, styleClass);
 
@@ -77,11 +77,11 @@ export const Select: FC<TSelectProps> = ({
   }, [triggerId, targetId, handleToggleOpenMenu]);
 
   useEffect(() => {
-    if (clickedElement && isOutsideClick) {
-      const elementId = clickedElement.getAttribute("id");
-      elementId !== triggerId && setOpenMenu(false);
+    if (isOutsideClick && clickedElement) {
+      const clickedElementId = clickedElement.getAttribute("id");
+      triggerId !== clickedElementId && setOpenMenu(false);
     }
-  }, [clickedElement, isOutsideClick, triggerId]);
+  }, [isOutsideClick, clickedElement, triggerId]);
 
   const handleSelect = (option: TOption) => {
     setSelectedOption(option);
