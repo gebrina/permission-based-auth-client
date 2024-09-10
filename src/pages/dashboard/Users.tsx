@@ -68,6 +68,7 @@ export const Users = () => {
         data={users}
         onDelete={handleDelete}
         onEdit={handleEdit}
+        onSave={() => {}}
       />
     </>
   );

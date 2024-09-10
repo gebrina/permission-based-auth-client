@@ -11,6 +11,7 @@ import ColumnIcon from "../assets/column.svg";
 import DeleteIcon from "../assets/delete.svg";
 import EditIcon from "../assets/edit.svg";
 import PlusIcon from "../assets/plus.svg";
+import SaveIcon from "../assets/save.svg";
 import { toLower, wait } from "../utils";
 import { Button, Input, Select, TOption } from "./";
 
@@ -25,7 +26,7 @@ type TTableProps<T> = {
   columns: THeader<T>[];
   onDelete?: (rowId: string) => void;
   onEdit?: (rowData: T) => void;
-  onAdd?: (rowData: T) => void;
+  onSave?: (rowData: T) => void;
   filter?: {
     columnKey?: keyof T;
   };
@@ -36,7 +37,7 @@ export function Table<T extends { id: string }>({
   columns,
   onDelete,
   onEdit,
-  onAdd,
+  onSave,
   filter,
 }: TTableProps<T>) {
   const selectOptions: TOption[] = columns.map((col) => ({
@@ -184,6 +185,11 @@ export function Table<T extends { id: string }>({
     setShownColumns(showColumns);
   };
 
+  const handleSave = () => {
+    setAddRow(false);
+    console.log(rowData);
+  };
+
   return (
     <div className="overflow-x-auto overflow-y-hidden min-h-ful">
       <div className="flex  items-end justify-between gap-2">
@@ -228,12 +234,14 @@ export function Table<T extends { id: string }>({
             />
           </div>
         )}
-        <img
-          src={PlusIcon}
-          className="h-5 mb-3 cursor-pointer hover:opacity-70"
-          alt="Add new record"
-          onClick={handleAddRow}
-        />
+        {onSave && (
+          <img
+            src={PlusIcon}
+            className="h-5 mb-3 cursor-pointer hover:opacity-70"
+            alt="Add new record"
+            onClick={handleAddRow}
+          />
+        )}
       </div>
       <table className="w-full bg-slate-200  bg-opacity-10">
         <thead>
@@ -265,21 +273,15 @@ export function Table<T extends { id: string }>({
                             item.id === rowData?.id ? "pb-3" : ""
                           }`}
                         >
-                          {rowData?.id === item.id ? (
-                            <Input
-                              type="text"
-                              name={key.toString()}
-                              defaultValue={rowData[key]?.toString() ?? ""}
-                              onChange={handleTDInputChange}
-                              styleClasses="bg-slate-500  bg-opacity-50 w-full h-10"
-                            />
-                          ) : addRow && itemIndex === 0 ? (
+                          {rowData?.id === item.id ||
+                          (!!onSave && addRow && itemIndex == 0) ? (
                             <>
                               <Input
                                 type="text"
                                 placeholder={name}
+                                defaultValue={addRow ? "" : String(item[key])}
                                 name={key.toString()}
-                                onChange={() => {}}
+                                onChange={handleTDInputChange}
                                 styleClasses="bg-slate-500 bg-opacity-50 w-full h-10"
                               />
                             </>
@@ -294,7 +296,12 @@ export function Table<T extends { id: string }>({
                     <td className={`p-2`}>
                       <div className="flex items-center justify-center gap-3 min-w-24">
                         {addRow && itemIndex === 0 ? (
-                          <div></div>
+                          <img
+                            src={SaveIcon}
+                            className="h-5 cursor-pointer hover:opacity-60"
+                            alt="Save"
+                            onClick={handleSave}
+                          />
                         ) : (
                           <>
                             {onEdit && (
