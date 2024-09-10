@@ -6,12 +6,12 @@ import { CloseIcon } from "../icons";
 
 type TNotificationType = "error" | "warning" | "success";
 
-type TNotificationProps = {
+export type TNotification = {
   message: string;
   type?: TNotificationType;
 };
 
-export const Notification: FC<TNotificationProps> = ({
+export const Notification: FC<TNotification> = ({
   message,
   type = "success",
 }) => {

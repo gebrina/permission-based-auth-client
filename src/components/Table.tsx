@@ -83,6 +83,10 @@ export function Table<T extends { id: string }>({
   const [addRow, setAddRow] = useState(false);
 
   useEffect(() => {
+    data.length > 0 && setFilteredData(data);
+  }, [data]);
+
+  useEffect(() => {
     const areAllColumnsRemoved = shownColumns.every(
       (col) => !!col.name === false
     );
@@ -187,7 +191,6 @@ export function Table<T extends { id: string }>({
 
   const handleSave = () => {
     setAddRow(false);
-    console.log(rowData);
   };
 
   return (

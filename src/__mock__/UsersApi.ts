@@ -6,7 +6,7 @@ import { getDatas, storeData } from "../utils";
 
 mock.onGet("users").reply(() => {
   const datas = getDatas<User>(USERS_KEY);
-  if (!datas) {
+  if (!datas?.length) {
     storeData<User>(USERS_KEY, users);
     return [200, users];
   }
@@ -31,4 +31,14 @@ mock.onPost("users").reply(({ data }) => {
   }
   storeData(USERS_KEY, datas ?? [data]);
   return [200, data];
+});
+
+mock.onDelete(/users\/+/).reply(({ url }) => {
+  const userId = url?.split("/")[1];
+  const datas = getDatas<User>(USERS_KEY);
+  if (datas && userId) {
+    const updatedDatas = datas.filter((user) => user.id !== userId);
+    storeData<User>(USERS_KEY, updatedDatas);
+  }
+  return [200, true];
 });
