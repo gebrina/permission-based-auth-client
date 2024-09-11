@@ -12,8 +12,9 @@ import DeleteIcon from "../assets/delete.svg";
 import EditIcon from "../assets/edit.svg";
 import PlusIcon from "../assets/plus.svg";
 import SaveIcon from "../assets/save.svg";
-import { toLower, wait } from "../utils";
+import { isMobile, toLower, wait } from "../utils";
 import { Button, Input, Select, TOption } from "./";
+import { Paginator } from "./Paginator";
 
 export type THeader<T> = {
   name?: string;
@@ -40,6 +41,8 @@ export function Table<T extends { id: string }>({
   onSave,
   filter,
 }: TTableProps<T>) {
+  const ROWS_PER_PAGE = isMobile() ? 6 : 12;
+
   const selectOptions: TOption[] = columns.map((col) => ({
     value: col.key.toString(),
     label: col.name ?? "",
@@ -77,13 +80,15 @@ export function Table<T extends { id: string }>({
     key: defaultFilterKey,
     name: defaultFilterName,
   });
-  const [filteredData, setFilteredData] = useState(data);
+  const [filteredData, setFilteredData] = useState(
+    data.slice(0, ROWS_PER_PAGE)
+  );
   const [shownColumns, setShownColumns] = useState(columns);
   const [showActionsColumn, setShowActionsColumn] = useState(true);
   const [addRow, setAddRow] = useState(false);
 
   useEffect(() => {
-    data.length > 0 && setFilteredData(data);
+    // data.length > 0 && setFilteredData(data);
   }, [data]);
 
   useEffect(() => {
@@ -194,7 +199,7 @@ export function Table<T extends { id: string }>({
   };
 
   return (
-    <div className="overflow-x-auto overflow-y-auto h-full">
+    <div className="h-full">
       <div className="flex  items-end justify-between gap-2">
         <div className="bg-gradient-to-tr from-slate-900 h-10 flex items-center p-2 rounded-lg hover:bg-opacity-70">
           <img
@@ -246,116 +251,123 @@ export function Table<T extends { id: string }>({
           />
         )}
       </div>
-      <table className="w-full bg-slate-200  bg-opacity-10">
-        <thead>
-          <tr>
-            {shownColumns.map(({ key, name, styleClasses }) => (
-              <Fragment key={key.toString()}>
-                {name && (
-                  <th
-                    className={`${styleClasses} text-left p-2`}
-                    key={key.toString()}
-                  >
-                    {name}
-                  </th>
-                )}
-              </Fragment>
-            ))}
-            {showActionsColumn && <th>Actions</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.length > 0
-            ? filteredData.map((item, itemIndex) => (
-                <tr className="border-y border-slate-400" key={item.id}>
-                  {shownColumns.map(({ key, name, styleClasses }, index) => (
-                    <Fragment key={key.toString() + index}>
-                      {name && (
-                        <td
-                          className={`${styleClasses ?? ""} p-2 ${
-                            item.id === rowData?.id ? "pb-3" : ""
-                          }`}
-                        >
-                          {rowData?.id === item.id ||
-                          (!!onSave && addRow && itemIndex == 0) ? (
-                            <>
-                              <Input
-                                type="text"
-                                placeholder={name}
-                                defaultValue={addRow ? "" : String(item[key])}
-                                name={key.toString()}
-                                onChange={handleTDInputChange}
-                                styleClasses="bg-slate-500 bg-opacity-50 w-full h-10"
-                              />
-                            </>
-                          ) : (
-                            <>{item[key]}</>
-                          )}
-                        </td>
-                      )}
-                    </Fragment>
-                  ))}
-                  {showActionsColumn && (
-                    <td className={`p-2`}>
-                      <div className="flex items-center justify-center gap-3 min-w-24">
-                        {addRow && itemIndex === 0 ? (
-                          <img
-                            src={SaveIcon}
-                            className="h-5 cursor-pointer hover:opacity-60"
-                            alt="Save"
-                            onClick={handleSave}
-                          />
-                        ) : (
-                          <>
-                            {onEdit && (
-                              <img
-                                className="h-8 cursor-pointer mix-blend-screen hover:opacity-50"
-                                src={
-                                  rowData?.id === item.id
-                                    ? UpdateIcon
-                                    : EditIcon
-                                }
-                                alt="Edit record"
-                                onClick={() => handleEdit(item)}
-                              />
-                            )}
-
-                            {onDelete && (
-                              <img
-                                className="h-5 order-2 mix-blend-screen cursor-pointer hover:opacity-50"
-                                alt="Delete a record"
-                                src={DeleteIcon}
-                                onClick={() => onDelete(item.id)}
-                              />
-                            )}
-                          </>
-                        )}
-                        {(rowData?.id === item.id ||
-                          (addRow && itemIndex === 0)) && (
-                          <img
-                            className="h-4 order-1 mix-blend-difference cursor-pointer hover:opacity-50"
-                            alt="Cancel editing"
-                            src={CancelIcon}
-                            onClick={handleCancel}
-                          />
-                        )}
-                      </div>
-                    </td>
+      <div className="overflow-auto">
+        <table className="w-full bg-slate-200  bg-opacity-10">
+          <thead>
+            <tr>
+              {shownColumns.map(({ key, name, styleClasses }) => (
+                <Fragment key={key.toString()}>
+                  {name && (
+                    <th
+                      className={`${styleClasses} text-left p-2`}
+                      key={key.toString()}
+                    >
+                      {name}
+                    </th>
                   )}
-                </tr>
-              ))
-            : searchTerm && (
-                <tr>
-                  <td
-                    colSpan={columns.length}
-                    className="px-2 text-lg leading-10 animate-pulse text-slate-200 text-opacity-70"
-                  >
-                    Item not found.
-                  </td>
-                </tr>
-              )}
-        </tbody>
-      </table>
+                </Fragment>
+              ))}
+              {showActionsColumn && <th>Actions</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredData.length > 0
+              ? filteredData.map((item, itemIndex) => (
+                  <tr className="border-y border-slate-400" key={item.id}>
+                    {shownColumns.map(({ key, name, styleClasses }, index) => (
+                      <Fragment key={key.toString() + index}>
+                        {name && (
+                          <td
+                            className={`${styleClasses ?? ""} p-2 ${
+                              item.id === rowData?.id ? "pb-3" : ""
+                            }`}
+                          >
+                            {rowData?.id === item.id ||
+                            (!!onSave && addRow && itemIndex == 0) ? (
+                              <>
+                                <Input
+                                  type="text"
+                                  placeholder={name}
+                                  defaultValue={addRow ? "" : String(item[key])}
+                                  name={key.toString()}
+                                  onChange={handleTDInputChange}
+                                  styleClasses="bg-slate-500 bg-opacity-50 w-full h-10"
+                                />
+                              </>
+                            ) : (
+                              <>{item[key]}</>
+                            )}
+                          </td>
+                        )}
+                      </Fragment>
+                    ))}
+                    {showActionsColumn && (
+                      <td className={`p-2`}>
+                        <div className="flex items-center justify-center gap-3 min-w-24">
+                          {addRow && itemIndex === 0 ? (
+                            <img
+                              src={SaveIcon}
+                              className="h-5 cursor-pointer hover:opacity-60"
+                              alt="Save"
+                              onClick={handleSave}
+                            />
+                          ) : (
+                            <>
+                              {onEdit && (
+                                <img
+                                  className="h-8 cursor-pointer mix-blend-screen hover:opacity-50"
+                                  src={
+                                    rowData?.id === item.id
+                                      ? UpdateIcon
+                                      : EditIcon
+                                  }
+                                  alt="Edit record"
+                                  onClick={() => handleEdit(item)}
+                                />
+                              )}
+
+                              {onDelete && (
+                                <img
+                                  className="h-5 order-2 mix-blend-screen cursor-pointer hover:opacity-50"
+                                  alt="Delete a record"
+                                  src={DeleteIcon}
+                                  onClick={() => onDelete(item.id)}
+                                />
+                              )}
+                            </>
+                          )}
+                          {(rowData?.id === item.id ||
+                            (addRow && itemIndex === 0)) && (
+                            <img
+                              className="h-4 order-1 mix-blend-difference cursor-pointer hover:opacity-50"
+                              alt="Cancel editing"
+                              src={CancelIcon}
+                              onClick={handleCancel}
+                            />
+                          )}
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                ))
+              : searchTerm && (
+                  <tr>
+                    <td
+                      colSpan={columns.length}
+                      className="px-2 text-lg leading-10 animate-pulse text-slate-200 text-opacity-70"
+                    >
+                      Item not found.
+                    </td>
+                  </tr>
+                )}
+          </tbody>
+        </table>
+      </div>
+      <Paginator
+        rowsPerPage={ROWS_PER_PAGE}
+        data={data}
+        setData={setFilteredData}
+      />
     </div>
   );
 }
