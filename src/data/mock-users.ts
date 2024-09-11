@@ -6,7 +6,6 @@ const users: User[] = [];
 const DATA_SIZE = 50;
 
 for (let i = 0; i < DATA_SIZE; i++) {
-  console.log(uuidv4());
   users.push({
     id: uuidv4(),
     username: faker.person.bio(),

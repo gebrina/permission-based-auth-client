@@ -194,7 +194,7 @@ export function Table<T extends { id: string }>({
   };
 
   return (
-    <div className="overflow-x-auto overflow-y-hidden min-h-ful">
+    <div className="overflow-x-auto overflow-y-auto h-full">
       <div className="flex  items-end justify-between gap-2">
         <div className="bg-gradient-to-tr from-slate-900 h-10 flex items-center p-2 rounded-lg hover:bg-opacity-70">
           <img
