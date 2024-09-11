@@ -1,31 +1,21 @@
+import { faker } from "@faker-js/faker";
+import { v4 as uuidv4 } from "uuid";
 import { User } from "../types";
 
-export const users: User[] = [
-  {
-    id: "8b39a419-6f72-450f-b6a9-1a58eeac726b",
-    email: "test@user.com",
-    firstName: "Test",
-    lastName: "User",
-    occupation: "SW",
-    roles: ["admin", "editor"],
-    username: "test",
-  },
-  {
-    id: "a06d9af9-016f-4579-97e2-d9f845f526b3",
-    email: "test2@user.com",
-    firstName: "Test2",
-    lastName: "User2",
-    occupation: "DR",
-    roles: ["editor"],
-    username: "test2",
-  },
-  {
-    id: "856b5190-e132-4a76-8549-43caa676bc0d",
-    email: "cool@user.com",
-    firstName: "Cool",
-    lastName: "Man",
-    occupation: "HR",
-    roles: ["blogger,manager"],
-    username: "cooler",
-  },
-];
+const users: User[] = [];
+const DATA_SIZE = 50;
+
+for (let i = 0; i < DATA_SIZE; i++) {
+  console.log(uuidv4());
+  users.push({
+    id: uuidv4(),
+    username: faker.person.bio(),
+    email: faker.internet.email(),
+    firstName: faker.person.firstName(),
+    lastName: faker.person.lastName(),
+    roles: i % 2 == 0 ? ["Admin", "HR"] : ["Editor"],
+    occupation: faker.commerce.department(),
+  });
+}
+
+export { users };
