@@ -11,8 +11,8 @@ import { twMerge } from "tailwind-merge";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 
 export type TOption = {
-  value: string;
-  label: string;
+  value: string | number;
+  label: string | number;
   icon?: ReactNode;
 };
 
@@ -63,11 +63,13 @@ export const Select: FC<TSelectProps> = ({
       const targetElement: HTMLElement = document.querySelector(
         `#${targetId}`
       )!;
+
       const { top, left, height } = targetElement.getBoundingClientRect();
       if (selectRef.current) {
-        selectRef.current.style.top = top + height + "px";
         selectRef.current.style.left = left + "px";
+        selectRef.current.style.top = top + height + "px";
       }
+
       handleToggleOpenMenu();
     };
 
@@ -82,6 +84,21 @@ export const Select: FC<TSelectProps> = ({
       triggerId !== clickedElementId && setOpenMenu(false);
     }
   }, [isOutsideClick, clickedElement, triggerId]);
+
+  // Effect for updating the select's `top` value if the trigger element
+  // is placed close to the bottom end of the window relative to viewport
+  useEffect(() => {
+    if (selectRef.current) {
+      const selectElement = selectRef.current;
+      const windowClientHeight =
+        window.innerHeight || document.documentElement.clientHeight;
+      const triggerElement = document.getElementById(triggerId)!;
+      const { top, bottom } = triggerElement.getBoundingClientRect();
+      if (selectElement.clientHeight > windowClientHeight - bottom) {
+        selectElement.style.top = top - selectElement.clientHeight + "px";
+      }
+    }
+  }, [openMenu, triggerId]);
 
   const handleSelect = (option: TOption) => {
     setSelectedOption(option);
@@ -102,7 +119,7 @@ export const Select: FC<TSelectProps> = ({
       {openMenu && (
         <div className="shadow-xl bg-slate-600 rounded-lg shadow-slate-900">
           {options.map(({ value, label, icon }, index) => (
-            <Fragment key={label + index}>
+            <Fragment key={label.toString() + index}>
               {label && (
                 <div
                   onClick={() => handleSelect({ value, label })}

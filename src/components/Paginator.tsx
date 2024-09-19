@@ -1,6 +1,8 @@
 import { useRef } from "react";
 import NextPageIcon from "../assets/next-page.svg";
 import PrevPageIcon from "../assets/prev-page.svg";
+import { Button } from "./Button";
+import { Select, TOption } from "./Select";
 
 type TPaginatorProps<T> = {
   rowsPerPage: number;
@@ -17,6 +19,20 @@ export function Paginator<T>({
 }: TPaginatorProps<T>) {
   const btnsClass = "flex items-center";
   const currentPageRef = useRef(1);
+  const INITIAL_PAGING_SIZE = rowsPerPage * 2;
+  const pagingOptions: TOption[] = [
+    {
+      label: INITIAL_PAGING_SIZE,
+      value: INITIAL_PAGING_SIZE,
+    },
+  ];
+
+  for (let i = 3; i <= 6; i++) {
+    pagingOptions.push({
+      label: INITIAL_PAGING_SIZE * i,
+      value: INITIAL_PAGING_SIZE * i,
+    });
+  }
 
   const itemsSize = data.length;
 
@@ -45,6 +61,10 @@ export function Paginator<T>({
 
     const takenData = data.slice(skip, take);
     setData(takenData);
+  };
+
+  const handleSelect = (option: TOption) => {
+    console.log(option);
   };
 
   return (
@@ -79,7 +99,24 @@ export function Paginator<T>({
         </button>
       </div>
 
-      {withDropDown && <div>DropDown</div>}
+      {withDropDown && (
+        <div>
+          <Button
+            btnId="paging-options-btn"
+            styleClass="text-lg px-2 py-1 text-left from-slate-900 to-slate-600 rounded-lg hover:from-slate-900 hover:to-slate-700"
+            label="Show upto..."
+            onClick={(e) => e?.preventDefault()}
+            variant="primary"
+          />
+
+          <Select
+            options={pagingOptions}
+            onSelect={handleSelect}
+            targetId="paging-options-btn"
+            triggerId="paging-options-btn"
+          />
+        </div>
+      )}
     </div>
   );
 }

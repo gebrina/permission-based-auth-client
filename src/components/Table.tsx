@@ -129,7 +129,7 @@ export function Table<T extends { id: string }>({
   const handleSelect = (option: TOption) =>
     setSearchBy({
       key: option.value as keyof T,
-      name: option.label,
+      name: option.label.toString(),
     });
 
   const handleEdit = (row: T) => {
@@ -151,7 +151,7 @@ export function Table<T extends { id: string }>({
   };
 
   const handleAddRow = () => {
-    // add new item with some sample data
+    // add new item with some sample data ==> placeholder
     const tempData: T = {
       id: "",
     } as T;
@@ -193,7 +193,7 @@ export function Table<T extends { id: string }>({
       )
       .map(({ value, label }) => ({
         key: value as keyof T,
-        name: label,
+        name: label.toString(),
       }));
 
     setColumnSelectOptions(updatedColumnOptions);
