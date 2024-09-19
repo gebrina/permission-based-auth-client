@@ -75,6 +75,10 @@ export const Users = () => {
         columns={talbeHeaders}
         data={users}
         onDelete={handleDelete}
+        paging={{
+          rowsPerPage: 10,
+          withDropdown: true,
+        }}
       />
     </>
   );

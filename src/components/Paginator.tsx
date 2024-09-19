@@ -49,33 +49,37 @@ export function Paginator<T>({
 
   return (
     <div className="flex justify-end gap-3 my-2 text-slate-200 text-opacity-75">
-      <button
-        className={`${btnsClass} ${
-          currentPageRef.current === 1
-            ? "cursor-not-allowed"
-            : "cursor-pointer  hover:opacity-60"
-        }`}
-        onClick={handlePrevPageClick}
-      >
-        <img src={PrevPageIcon} alt="Previous page" className={"h-5"} />
-        <span>Previous</span>
-      </button>
-      <div>
-        {currentPageRef.current} / {Math.round(itemsSize / rowsPerPage)}
-      </div>
-      <button
-        className={`${btnsClass}
+      <div className="flex gap-2">
+        <button
+          className={`${btnsClass} ${
+            currentPageRef.current === 1
+              ? "cursor-not-allowed"
+              : "cursor-pointer  hover:opacity-60"
+          }`}
+          onClick={handlePrevPageClick}
+        >
+          <img src={PrevPageIcon} alt="Previous page" className={"h-5"} />
+          <span>Previous</span>
+        </button>
+        <div>
+          {currentPageRef.current} / {Math.round(itemsSize / rowsPerPage)}
+        </div>
+        <button
+          className={`${btnsClass}
       ${
         currentPageRef.current === Math.round(itemsSize / rowsPerPage)
           ? "cursor-not-allowed"
           : "cursor-pointer hover:opacity-50"
       }
       `}
-        onClick={handleNextPageClick}
-      >
-        <span>Next</span>
-        <img src={NextPageIcon} alt="Next page" className={"h-5"} />
-      </button>
+          onClick={handleNextPageClick}
+        >
+          <span>Next</span>
+          <img src={NextPageIcon} alt="Next page" className={"h-5"} />
+        </button>
+      </div>
+
+      {withDropDown && <div>DropDown</div>}
     </div>
   );
 }

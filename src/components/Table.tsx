@@ -2,6 +2,7 @@ import {
   ChangeEvent,
   Fragment,
   ReactElement,
+  ReactNode,
   useEffect,
   useState,
 } from "react";
@@ -31,6 +32,10 @@ type TTableProps<T> = {
   filter?: {
     columnKey?: keyof T;
   };
+  paging?: Partial<{
+    withDropdown: boolean;
+    rowsPerPage: number;
+  }>;
 };
 
 export function Table<T extends { id: string }>({
@@ -40,8 +45,9 @@ export function Table<T extends { id: string }>({
   onEdit,
   onSave,
   filter,
+  paging,
 }: TTableProps<T>) {
-  const ROWS_PER_PAGE = isMobile() ? 6 : 12;
+  const ROWS_PER_PAGE = paging?.rowsPerPage || (isMobile() ? 6 : 10);
 
   const selectOptions: TOption[] = columns.map((col) => ({
     value: col.key.toString(),
@@ -295,7 +301,9 @@ export function Table<T extends { id: string }>({
                                 />
                               </>
                             ) : (
-                              <span className="truncate">{item[key]}</span>
+                              <span className="truncate">
+                                {item[key] as ReactNode}
+                              </span>
                             )}
                           </td>
                         )}
@@ -367,6 +375,7 @@ export function Table<T extends { id: string }>({
         rowsPerPage={ROWS_PER_PAGE}
         data={data}
         setData={setFilteredData}
+        withDropDown={paging?.withDropdown}
       />
     </div>
   );
