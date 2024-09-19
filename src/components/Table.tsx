@@ -295,7 +295,7 @@ export function Table<T extends { id: string }>({
                                 />
                               </>
                             ) : (
-                              <>{item[key]}</>
+                              <span className="truncate">{item[key]}</span>
                             )}
                           </td>
                         )}
