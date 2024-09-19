@@ -69,7 +69,7 @@ export function Paginator<T>({
 
   return (
     <div className="flex justify-end gap-3 my-2 text-slate-200 text-opacity-75">
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
         <button
           className={`${btnsClass} ${
             currentPageRef.current === 1
