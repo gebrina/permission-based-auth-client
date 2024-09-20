@@ -52,14 +52,14 @@ export function Paginator<T>({
       updateData(currentPageRef.current);
     }
   };
-  console.table(data);
 
-  const updateData = (currentPageNumber: number) => {
-    const skip = (currentPageNumber - 1) * rowsPerPageRef.current;
+  const updateData = (currentPageNumber: number, btnNavigation = true) => {
+    let skip = (currentPageNumber - 1) * rowsPerPageRef.current;
+    if (!btnNavigation) skip = (currentPageNumber - 1) * rowsPerPage;
+
     let take = skip + rowsPerPageRef.current;
-    if (take >= itemsSizeRef.current) {
-      take = itemsSizeRef.current;
-    }
+    if (take >= itemsSizeRef.current) take = itemsSizeRef.current;
+
     if (skip > itemsSizeRef.current) return;
 
     const takenData = data.slice(skip, take);
@@ -69,7 +69,7 @@ export function Paginator<T>({
   const handleSelect = (option: TOption) => {
     const { value } = option;
     rowsPerPageRef.current = value as number;
-    updateData(currentPageRef.current);
+    updateData(currentPageRef.current, false);
   };
 
   return (
