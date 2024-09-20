@@ -18,23 +18,25 @@ export function Paginator<T>({
   setData,
 }: TPaginatorProps<T>) {
   const btnsClass = "flex items-center";
-  const currentPageRef = useRef(1);
-  const INITIAL_PAGING_SIZE = rowsPerPage * 2;
   const pagingOptions: TOption[] = [
     {
-      label: INITIAL_PAGING_SIZE,
-      value: INITIAL_PAGING_SIZE,
+      label: rowsPerPage,
+      value: rowsPerPage,
     },
   ];
 
-  for (let i = 3; i <= 6; i++) {
+  for (let i = 2; i <= 5; i++) {
     pagingOptions.push({
-      label: INITIAL_PAGING_SIZE * i,
-      value: INITIAL_PAGING_SIZE * i,
+      label: rowsPerPage * i,
+      value: rowsPerPage * i,
     });
   }
-
-  const itemsSize = data.length;
+  const itemsSizeRef = useRef<number>(data.length);
+  const rowsPerPageRef = useRef<number>(rowsPerPage);
+  const currentPageRef = useRef<number>(1);
+  const lastPage = Math.round(itemsSizeRef.current / rowsPerPageRef.current);
+  const disablePrevPageButton = currentPageRef.current === 1;
+  const disableNextPageButton = currentPageRef.current === lastPage;
 
   const handlePrevPageClick = () => {
     if (currentPageRef.current > 1) {
@@ -45,35 +47,39 @@ export function Paginator<T>({
   };
 
   const handleNextPageClick = () => {
-    if (currentPageRef.current + rowsPerPage < itemsSize) {
+    if (currentPageRef.current + rowsPerPage < itemsSizeRef.current) {
       currentPageRef.current += 1;
       updateData(currentPageRef.current);
     }
   };
+  console.table(data);
 
   const updateData = (currentPageNumber: number) => {
-    const skip = currentPageNumber == 1 ? 0 : currentPageNumber * rowsPerPage;
-    let take = skip + rowsPerPage;
-    if (take >= itemsSize) {
-      take = itemsSize;
+    const skip = (currentPageNumber - 1) * rowsPerPageRef.current;
+    let take = skip + rowsPerPageRef.current;
+    if (take >= itemsSizeRef.current) {
+      take = itemsSizeRef.current;
     }
-    if (skip > itemsSize) return;
+    if (skip > itemsSizeRef.current) return;
 
     const takenData = data.slice(skip, take);
     setData(takenData);
   };
 
   const handleSelect = (option: TOption) => {
-    console.log(option);
+    const { value } = option;
+    rowsPerPageRef.current = value as number;
+    updateData(currentPageRef.current);
   };
 
   return (
     <div className="flex justify-end gap-3 my-2 text-slate-200 text-opacity-75">
       <div className="flex items-center gap-2">
         <button
+          disabled={disablePrevPageButton}
           className={`${btnsClass} ${
-            currentPageRef.current === 1
-              ? "cursor-not-allowed"
+            disablePrevPageButton
+              ? "cursor-not-allowed disabled"
               : "cursor-pointer  hover:opacity-60"
           }`}
           onClick={handlePrevPageClick}
@@ -82,12 +88,13 @@ export function Paginator<T>({
           <span>Previous</span>
         </button>
         <div>
-          {currentPageRef.current} / {Math.round(itemsSize / rowsPerPage)}
+          {currentPageRef.current} / {lastPage}
         </div>
         <button
+          disabled={disableNextPageButton}
           className={`${btnsClass}
       ${
-        currentPageRef.current === Math.round(itemsSize / rowsPerPage)
+        disableNextPageButton
           ? "cursor-not-allowed"
           : "cursor-pointer hover:opacity-50"
       }

@@ -257,126 +257,133 @@ export function Table<T extends { id: string }>({
           />
         )}
       </div>
-      <div className="overflow-auto">
-        <table className="w-full bg-slate-200  bg-opacity-10">
-          <thead>
-            <tr>
-              {shownColumns.map(({ key, name, styleClasses }) => (
-                <Fragment key={key.toString()}>
-                  {name && (
-                    <th
-                      className={`${styleClasses} text-left p-2`}
-                      key={key.toString()}
-                    >
-                      {name}
-                    </th>
-                  )}
-                </Fragment>
-              ))}
-              {showActionsColumn && <th>Actions</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredData.length > 0
-              ? filteredData.map((item, itemIndex) => (
-                  <tr className="border-y border-slate-400" key={item.id}>
-                    {shownColumns.map(({ key, name, styleClasses }, index) => (
-                      <Fragment key={key.toString() + index}>
-                        {name && (
-                          <td
-                            className={`${styleClasses ?? ""} p-2 ${
-                              item.id === rowData?.id ? "pb-3" : ""
-                            }`}
-                          >
-                            {rowData?.id === item.id ||
-                            (!!onSave && addRow && itemIndex == 0) ? (
-                              <>
-                                <Input
-                                  type="text"
-                                  placeholder={name}
-                                  defaultValue={addRow ? "" : String(item[key])}
-                                  name={key.toString()}
-                                  onChange={handleTDInputChange}
-                                  styleClasses="bg-slate-500 bg-opacity-50 w-full h-10"
-                                />
-                              </>
-                            ) : (
-                              <span className="truncate">
-                                {item[key] as ReactNode}
-                              </span>
-                            )}
-                          </td>
-                        )}
-                      </Fragment>
-                    ))}
-                    {showActionsColumn && (
-                      <td className={`p-2`}>
-                        <div className="flex items-center justify-center gap-3 min-w-24">
-                          {addRow && itemIndex === 0 ? (
-                            <img
-                              src={SaveIcon}
-                              className="h-5 cursor-pointer hover:opacity-60"
-                              alt="Save"
-                              onClick={handleSave}
-                            />
-                          ) : (
-                            <>
-                              {onEdit && (
-                                <img
-                                  className="h-8 cursor-pointer mix-blend-screen hover:opacity-50"
-                                  src={
-                                    rowData?.id === item.id
-                                      ? UpdateIcon
-                                      : EditIcon
-                                  }
-                                  alt="Edit record"
-                                  onClick={() => handleEdit(item)}
-                                />
-                              )}
 
-                              {onDelete && (
-                                <img
-                                  className="h-5 order-2 mix-blend-screen cursor-pointer hover:opacity-50"
-                                  alt="Delete a record"
-                                  src={DeleteIcon}
-                                  onClick={() => onDelete(item.id)}
-                                />
-                              )}
-                            </>
-                          )}
-                          {(rowData?.id === item.id ||
-                            (addRow && itemIndex === 0)) && (
-                            <img
-                              className="h-4 order-1 mix-blend-difference cursor-pointer hover:opacity-50"
-                              alt="Cancel editing"
-                              src={CancelIcon}
-                              onClick={handleCancel}
-                            />
-                          )}
-                        </div>
-                      </td>
+      <div className="flex flex-col max-h-[85%]">
+        <div className="overflow-auto flex-1">
+          <table className="w-full bg-slate-200 bg-opacity-10">
+            <thead>
+              <tr>
+                {shownColumns.map(({ key, name, styleClasses }) => (
+                  <Fragment key={key.toString()}>
+                    {name && (
+                      <th
+                        className={`${styleClasses} text-left p-2`}
+                        key={key.toString()}
+                      >
+                        {name}
+                      </th>
                     )}
-                  </tr>
-                ))
-              : searchTerm && (
-                  <tr>
-                    <td
-                      colSpan={columns.length}
-                      className="px-2 text-lg leading-10 animate-pulse text-slate-200 text-opacity-70"
-                    >
-                      Item not found.
-                    </td>
-                  </tr>
-                )}
-          </tbody>
-        </table>
+                  </Fragment>
+                ))}
+                {showActionsColumn && <th>Actions</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredData.length > 0
+                ? filteredData.map((item, itemIndex) => (
+                    <tr className="border-y border-slate-400" key={item.id}>
+                      {shownColumns.map(
+                        ({ key, name, styleClasses }, index) => (
+                          <Fragment key={key.toString() + index}>
+                            {name && (
+                              <td
+                                className={`${styleClasses ?? ""} p-2 ${
+                                  item.id === rowData?.id ? "pb-3" : ""
+                                }`}
+                              >
+                                {rowData?.id === item.id ||
+                                (!!onSave && addRow && itemIndex == 0) ? (
+                                  <>
+                                    <Input
+                                      type="text"
+                                      placeholder={name}
+                                      defaultValue={
+                                        addRow ? "" : String(item[key])
+                                      }
+                                      name={key.toString()}
+                                      onChange={handleTDInputChange}
+                                      styleClasses="bg-slate-500 bg-opacity-50 w-full h-10"
+                                    />
+                                  </>
+                                ) : (
+                                  <span className="truncate">
+                                    {item[key] as ReactNode}
+                                  </span>
+                                )}
+                              </td>
+                            )}
+                          </Fragment>
+                        )
+                      )}
+                      {showActionsColumn && (
+                        <td className={`p-2`}>
+                          <div className="flex items-center justify-center gap-3 min-w-24">
+                            {addRow && itemIndex === 0 ? (
+                              <img
+                                src={SaveIcon}
+                                className="h-5 cursor-pointer hover:opacity-60"
+                                alt="Save"
+                                onClick={handleSave}
+                              />
+                            ) : (
+                              <>
+                                {onEdit && (
+                                  <img
+                                    className="h-8 cursor-pointer mix-blend-screen hover:opacity-50"
+                                    src={
+                                      rowData?.id === item.id
+                                        ? UpdateIcon
+                                        : EditIcon
+                                    }
+                                    alt="Edit record"
+                                    onClick={() => handleEdit(item)}
+                                  />
+                                )}
+
+                                {onDelete && (
+                                  <img
+                                    className="h-5 order-2 mix-blend-screen cursor-pointer hover:opacity-50"
+                                    alt="Delete a record"
+                                    src={DeleteIcon}
+                                    onClick={() => onDelete(item.id)}
+                                  />
+                                )}
+                              </>
+                            )}
+                            {(rowData?.id === item.id ||
+                              (addRow && itemIndex === 0)) && (
+                              <img
+                                className="h-4 order-1 mix-blend-difference cursor-pointer hover:opacity-50"
+                                alt="Cancel editing"
+                                src={CancelIcon}
+                                onClick={handleCancel}
+                              />
+                            )}
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))
+                : searchTerm && (
+                    <tr>
+                      <td
+                        colSpan={columns.length}
+                        className="px-2 text-lg leading-10 animate-pulse text-slate-200 text-opacity-70"
+                      >
+                        Item not found.
+                      </td>
+                    </tr>
+                  )}
+            </tbody>
+          </table>
+        </div>
+        <Paginator
+          rowsPerPage={ROWS_PER_PAGE}
+          data={data}
+          setData={setFilteredData}
+          withDropDown={paging?.withDropdown}
+        />
       </div>
-      <Paginator
-        rowsPerPage={ROWS_PER_PAGE}
-        data={data}
-        setData={setFilteredData}
-        withDropDown={paging?.withDropdown}
-      />
     </div>
   );
 }
