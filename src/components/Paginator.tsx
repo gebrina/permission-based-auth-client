@@ -119,6 +119,7 @@ export function Paginator<T>({
           <Select
             options={pagingOptions}
             onSelect={handleSelect}
+            selected={pagingOptions[0]}
             targetId="paging-options-btn"
             triggerId="paging-options-btn"
           />
