@@ -78,6 +78,7 @@ export const SideNav: FC<TSideNavProps> = ({ menus }) => {
           >
             <NavLink className="h-8 flex gap-2 items-center" to={link}>
               <img
+                title={title}
                 className="h-full w-8 object-cover group-hover:rotate-[-360deg] transition-all mix-blend-screen"
                 src={icon}
                 alt={title}
