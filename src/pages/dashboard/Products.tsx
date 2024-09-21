@@ -1,5 +1,9 @@
 import { Header } from "../../components/Header";
 
 export const Products = () => {
-  return <Header title="Products" />;
+  return (
+    <div>
+      <Header title="Products" />
+    </div>
+  );
 };

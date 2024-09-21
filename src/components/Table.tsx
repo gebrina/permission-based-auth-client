@@ -94,7 +94,7 @@ export function Table<T extends { id: string }>({
   const [addRow, setAddRow] = useState(false);
 
   useEffect(() => {
-    // data.length > 0 && setFilteredData(data);
+    data.length > 0 && setFilteredData(data);
   }, [data]);
 
   useEffect(() => {

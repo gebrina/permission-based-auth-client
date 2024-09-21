@@ -1,15 +1,29 @@
-import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { getAll, remove } from "../../api/Requests";
 import { Loader, Notification, TNotification } from "../../components";
 import { Header } from "../../components/Header";
 import { Table, THeader } from "../../components/Table";
+import { DELETE_USER_KEY, GET_ALL_USERS_KEY } from "../../constants/QueryKeys";
 import { User } from "../../types";
 
 export const Users = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [notification, setNotification] = useState<TNotification>();
 
+  const {
+    data: users,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: [GET_ALL_USERS_KEY],
+    queryFn: () => getAll<User>("users"),
+  });
+  console.log("Fetched Data", users?.length);
+  const { mutate } = useMutation({
+    mutationKey: [DELETE_USER_KEY],
+    mutationFn: (rowId: string) => remove("users", rowId),
+  });
   const talbeHeaders: THeader<User>[] = [
     {
       key: "id",
@@ -37,49 +51,45 @@ export const Users = () => {
     },
   ];
 
-  const getAllUsers = useCallback(() => {
-    getAll<User>("users")
-      .then((data) => setUsers(data))
-      .catch((err) => setNotification({ type: "error", message: err.message }))
-      .finally(() => setIsLoading(false));
-  }, []);
-
   useEffect(() => {
-    getAllUsers();
-  }, [getAllUsers]);
+    error && setNotification({ type: "error", message: error.message });
+  }, [error]);
 
   if (isLoading)
     return <Loader classStyles="absolute  left-[25%]  top-[25%]" />;
 
   const handleDelete = (rowId: string) =>
-    remove<boolean>("users", rowId)
-      .then(() => {
-        getAllUsers();
+    mutate(rowId, {
+      onSuccess: async () => {
+        refetch();
         setNotification({
           type: "success",
           message: "Record removed successfully.",
         });
-      })
-      .catch((err) => setNotification({ type: "error", message: err.message }));
+      },
+      onError: (e) => setNotification({ type: "error", message: e.message }),
+    });
 
   return (
     <>
       <Header title="Users" />
       {notification && (
-        <Notification message={notification.message} type={notification.type} />
+        <Notification type={notification.type} message={notification.message} />
       )}
-      <Table
-        filter={{
-          columnKey: "username",
-        }}
-        columns={talbeHeaders}
-        data={users}
-        onDelete={handleDelete}
-        paging={{
-          rowsPerPage: 10,
-          withDropdown: true,
-        }}
-      />
+      {!!users && (
+        <Table
+          filter={{
+            columnKey: "username",
+          }}
+          columns={talbeHeaders}
+          data={users}
+          onDelete={handleDelete}
+          paging={{
+            rowsPerPage: 10,
+            withDropdown: true,
+          }}
+        />
+      )}
     </>
   );
 };
