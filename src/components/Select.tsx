@@ -55,6 +55,10 @@ export const Select: FC<TSelectProps> = ({
   );
 
   useEffect(() => {
+    selected && setSelectedOption(selected);
+  }, [selected]);
+
+  useEffect(() => {
     const triggerElement: HTMLElement = document.querySelector(
       `#${triggerId}`
     )!;

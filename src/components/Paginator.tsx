@@ -29,33 +29,37 @@ export function Paginator<T>({
     },
   ];
 
-  for (let i = 2; i <= 5; i++) {
-    pagingOptions.push({
-      label: rowsPerPage * i,
-      value: rowsPerPage * i,
-    });
+  for (let i = 2; i <= 6; i += 2) {
+    if (i * rowsPerPage <= data.length) {
+      pagingOptions.push({
+        label: rowsPerPage * i,
+        value: rowsPerPage * i,
+      });
+    }
   }
   const [itemSize, setItemSize] = useState(data.length);
-  const [rowsperPage, setRowsPerPage] = useState(rowsPerPage);
-  const lastPage = Math.round(itemSize / rowsperPage);
+  const [rowsNumberPerPage, setRowsNumberPerPage] = useState(rowsPerPage);
+  const lastPage = Math.round(itemSize / rowsNumberPerPage);
   const disablePrevPageButton = currentPage === 1;
   const disableNextPageButton = currentPage === lastPage;
 
   useEffect(() => {
     setItemSize((prevSize) => {
       const dataSize = data.length;
-      const pageRows = dataSize < rowsPerPage ? dataSize : rowsPerPage;
+      const pageRows =
+        dataSize < rowsNumberPerPage ? dataSize : rowsNumberPerPage;
       const itemsSize = prevSize !== dataSize ? dataSize : prevSize;
-      setRowsPerPage(pageRows);
+      setRowsNumberPerPage(pageRows);
       return itemsSize;
     });
-  }, [data, rowsPerPage]);
+  }, [data, rowsNumberPerPage]);
 
   const handlePrevPageClick = () => {
     if (currentPage > 1) {
       const pageNumber = currentPage - 1;
       setPage(pageNumber);
       updateData(pageNumber);
+      setRowsNumberPerPage(rowsPerPage);
     }
     return;
   };
@@ -68,11 +72,15 @@ export function Paginator<T>({
     }
   };
 
-  const updateData = (currentPageNumber: number, btnNavigation = true) => {
-    let skip = (currentPageNumber - 1) * rowsperPage;
-    if (!btnNavigation) skip = (currentPageNumber - 1) * rowsPerPage;
+  const updateData = (
+    currentPageNumber: number,
+    btnNavigation = true,
+    rowsNumberPerPage: number = rowsPerPage
+  ) => {
+    let skip = (currentPageNumber - 1) * rowsNumberPerPage;
+    if (!btnNavigation) skip = (currentPageNumber - 1) * rowsNumberPerPage;
 
-    let take = skip + rowsperPage;
+    let take = skip + rowsNumberPerPage;
     if (take >= itemSize) take = itemSize;
 
     if (skip > itemSize) return;
@@ -83,8 +91,9 @@ export function Paginator<T>({
 
   const handleSelect = (option: TOption) => {
     const { value } = option;
-    setRowsPerPage(value as number);
-    updateData(currentPage, false);
+    const selectedItemSize = value as number;
+    setRowsNumberPerPage(selectedItemSize);
+    updateData(currentPage, false, selectedItemSize);
   };
 
   return (
@@ -134,7 +143,9 @@ export function Paginator<T>({
           <Select
             options={pagingOptions}
             onSelect={handleSelect}
-            selected={pagingOptions[0]}
+            selected={pagingOptions.find(
+              (item) => item.label === rowsNumberPerPage
+            )}
             targetId="paging-options-btn"
             triggerId="paging-options-btn"
           />
