@@ -69,6 +69,7 @@ export function Paginator<T>({
       const pageNumber = currentPage + 1;
       setPage(pageNumber);
       updateData(pageNumber);
+      setRowsNumberPerPage(rowsPerPage);
     }
   };
 

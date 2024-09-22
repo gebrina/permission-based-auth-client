@@ -389,7 +389,7 @@ export function Table<T extends { id: string }>({
             </tbody>
           </table>
         </div>
-        {!!filteredData.length && (
+        {!!filteredData.length && shownColumns.length > 1 && (
           <Paginator
             rowsPerPage={ROWS_PER_PAGE}
             // if user is filtering any data paginate the filtered data else
