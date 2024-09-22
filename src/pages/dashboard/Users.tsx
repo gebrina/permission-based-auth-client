@@ -19,11 +19,12 @@ export const Users = () => {
     queryKey: [GET_ALL_USERS_KEY],
     queryFn: () => getAll<User>("users"),
   });
-  console.log("Fetched Data", users?.length);
+
   const { mutate } = useMutation({
     mutationKey: [DELETE_USER_KEY],
     mutationFn: (rowId: string) => remove("users", rowId),
   });
+
   const talbeHeaders: THeader<User>[] = [
     {
       key: "id",

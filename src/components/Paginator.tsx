@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useState } from "react";
 import NextPageIcon from "../assets/next-page.svg";
 import PrevPageIcon from "../assets/prev-page.svg";
 import { Button } from "./Button";
@@ -6,16 +6,20 @@ import { Select, TOption } from "./Select";
 
 type TPaginatorProps<T> = {
   rowsPerPage: number;
+  currentPage: number;
   withDropDown?: boolean;
   data: T[];
   setData: (data: T[]) => void;
+  setPage: (pageNumber: number) => void;
 };
 
 export function Paginator<T>({
   rowsPerPage,
+  currentPage,
   withDropDown,
   data,
   setData,
+  setPage,
 }: TPaginatorProps<T>) {
   const btnsClass = "flex items-center";
   const pagingOptions: TOption[] = [
@@ -31,36 +35,47 @@ export function Paginator<T>({
       value: rowsPerPage * i,
     });
   }
-  const itemsSizeRef = useRef<number>(data.length);
-  const rowsPerPageRef = useRef<number>(rowsPerPage);
-  const currentPageRef = useRef<number>(1);
-  const lastPage = Math.round(itemsSizeRef.current / rowsPerPageRef.current);
-  const disablePrevPageButton = currentPageRef.current === 1;
-  const disableNextPageButton = currentPageRef.current === lastPage;
+  const [itemSize, setItemSize] = useState(data.length);
+  const [rowsperPage, setRowsPerPage] = useState(rowsPerPage);
+  const lastPage = Math.round(itemSize / rowsperPage);
+  const disablePrevPageButton = currentPage === 1;
+  const disableNextPageButton = currentPage === lastPage;
+
+  useEffect(() => {
+    setItemSize((prevSize) => {
+      const dataSize = data.length;
+      const pageRows = dataSize < rowsPerPage ? dataSize : rowsPerPage;
+      const itemsSize = prevSize !== dataSize ? dataSize : prevSize;
+      setRowsPerPage(pageRows);
+      return itemsSize;
+    });
+  }, [data, rowsPerPage]);
 
   const handlePrevPageClick = () => {
-    if (currentPageRef.current > 1) {
-      currentPageRef.current -= 1;
-      updateData(currentPageRef.current);
+    if (currentPage > 1) {
+      const pageNumber = currentPage - 1;
+      setPage(pageNumber);
+      updateData(pageNumber);
     }
     return;
   };
 
   const handleNextPageClick = () => {
-    if (currentPageRef.current + rowsPerPage < itemsSizeRef.current) {
-      currentPageRef.current += 1;
-      updateData(currentPageRef.current);
+    if (currentPage + rowsPerPage < itemSize) {
+      const pageNumber = currentPage + 1;
+      setPage(pageNumber);
+      updateData(pageNumber);
     }
   };
 
   const updateData = (currentPageNumber: number, btnNavigation = true) => {
-    let skip = (currentPageNumber - 1) * rowsPerPageRef.current;
+    let skip = (currentPageNumber - 1) * rowsperPage;
     if (!btnNavigation) skip = (currentPageNumber - 1) * rowsPerPage;
 
-    let take = skip + rowsPerPageRef.current;
-    if (take >= itemsSizeRef.current) take = itemsSizeRef.current;
+    let take = skip + rowsperPage;
+    if (take >= itemSize) take = itemSize;
 
-    if (skip > itemsSizeRef.current) return;
+    if (skip > itemSize) return;
 
     const takenData = data.slice(skip, take);
     setData(takenData);
@@ -68,8 +83,8 @@ export function Paginator<T>({
 
   const handleSelect = (option: TOption) => {
     const { value } = option;
-    rowsPerPageRef.current = value as number;
-    updateData(currentPageRef.current, false);
+    setRowsPerPage(value as number);
+    updateData(currentPage, false);
   };
 
   return (
@@ -88,7 +103,7 @@ export function Paginator<T>({
           <span>Previous</span>
         </button>
         <div>
-          {currentPageRef.current} / {lastPage}
+          {currentPage} / {lastPage}
         </div>
         <button
           disabled={disableNextPageButton}

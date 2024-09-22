@@ -48,11 +48,11 @@ export function Table<T extends { id: string }>({
   paging,
 }: TTableProps<T>) {
   const ROWS_PER_PAGE = paging?.rowsPerPage || (isMobile() ? 6 : 10);
-
   const selectOptions: TOption[] = columns.map((col) => ({
     value: col.key.toString(),
     label: col.name ?? "",
   }));
+  const defaultData = data.slice(0, ROWS_PER_PAGE);
 
   const shownColumIcon = <img src={UpdateIcon} className="h-6" alt="Shown" />;
   const hiddenColumIcon = (
@@ -86,16 +86,20 @@ export function Table<T extends { id: string }>({
     key: defaultFilterKey,
     name: defaultFilterName,
   });
-  const [filteredData, setFilteredData] = useState(
-    data.slice(0, ROWS_PER_PAGE)
-  );
+
+  const [filteredData, setFilteredData] = useState(defaultData);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [shownColumns, setShownColumns] = useState(columns);
   const [showActionsColumn, setShowActionsColumn] = useState(true);
   const [addRow, setAddRow] = useState(false);
 
   useEffect(() => {
-    data.length > 0 && setFilteredData(data);
-  }, [data]);
+    // update table data if there is any subsequent change on the data
+    if (data.length) {
+      setFilteredData(data.slice(0, ROWS_PER_PAGE));
+    }
+  }, [data, ROWS_PER_PAGE]);
 
   useEffect(() => {
     const areAllColumnsRemoved = shownColumns.every(
@@ -122,8 +126,16 @@ export function Table<T extends { id: string }>({
       const filteredData = data.filter((x) =>
         toLower(x[searchBy.key] as string).includes(toLower(search))
       );
-      setFilteredData(filteredData);
-    } else setFilteredData(data);
+      const pageData = filteredData.slice(0, ROWS_PER_PAGE);
+      setFilteredData(pageData);
+      // Reset current page to 1 for the updated data
+      filteredData.length > 0 && setCurrentPage(1);
+    } else {
+      const skip = (currentPage - 1) * ROWS_PER_PAGE;
+      const take = skip + ROWS_PER_PAGE;
+      const prevData = data.slice(skip, take);
+      setFilteredData(prevData);
+    }
   };
 
   const handleSelect = (option: TOption) =>
@@ -146,7 +158,7 @@ export function Table<T extends { id: string }>({
     if (addRow) {
       setAddRow(false);
       // When user cancels adding record reset data back to the original
-      setFilteredData(data);
+      setFilteredData(defaultData);
     }
   };
 
@@ -377,12 +389,18 @@ export function Table<T extends { id: string }>({
             </tbody>
           </table>
         </div>
-        <Paginator
-          rowsPerPage={ROWS_PER_PAGE}
-          data={data}
-          setData={setFilteredData}
-          withDropDown={paging?.withDropdown}
-        />
+        {!!filteredData.length && (
+          <Paginator
+            rowsPerPage={ROWS_PER_PAGE}
+            // if user is filtering any data paginate the filtered data else
+            // paginate the original data
+            data={searchTerm ? filteredData : data}
+            setPage={setCurrentPage}
+            currentPage={currentPage}
+            setData={setFilteredData}
+            withDropDown={paging?.withDropdown}
+          />
+        )}
       </div>
     </div>
   );
