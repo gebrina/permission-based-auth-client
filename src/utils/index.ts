@@ -49,3 +49,5 @@ export const getDatas = <T>(storageKey: string): T[] | undefined => {
   if (data) return JSON.parse(data);
   return undefined;
 };
+
+export const isProductImageUrl = (input: string) => input.startsWith("http");

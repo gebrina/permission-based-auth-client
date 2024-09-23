@@ -13,7 +13,7 @@ import DeleteIcon from "../assets/delete.svg";
 import EditIcon from "../assets/edit.svg";
 import PlusIcon from "../assets/plus.svg";
 import SaveIcon from "../assets/save.svg";
-import { isMobile, toLower, wait } from "../utils";
+import { isMobile, isProductImageUrl, toLower, wait } from "../utils";
 import { Button, Input, Select, TOption } from "./";
 import { Paginator } from "./Paginator";
 
@@ -242,7 +242,9 @@ export function Table<T extends { id: string }>({
               type="search"
               placeholder={`Type ${toLower(searchBy.name ?? "")}...`}
               styleClasses="mb-1 relative w-full shadow-slate-500"
-              onChange={handleChange}
+              onChange={(event) =>
+                handleChange(event as ChangeEvent<HTMLInputElement>)
+              }
             />
             <Button
               btnId="filter-by-btn"
@@ -307,21 +309,41 @@ export function Table<T extends { id: string }>({
                                 (!!onSave && addRow && itemIndex == 0) ? (
                                   <>
                                     <Input
-                                      type="text"
+                                      type={
+                                        isProductImageUrl(String(item[key]))
+                                          ? "file"
+                                          : "text"
+                                      }
                                       placeholder={name}
                                       defaultValue={
-                                        addRow ? "" : String(item[key])
+                                        addRow ||
+                                        isProductImageUrl(String(item[key]))
+                                          ? ""
+                                          : String(item[key])
                                       }
                                       name={key.toString()}
-                                      onChange={handleTDInputChange}
-                                      styleClasses="bg-slate-500 bg-opacity-50 w-full h-10"
+                                      onChange={(event) =>
+                                        handleTDInputChange(
+                                          event as ChangeEvent<HTMLInputElement>
+                                        )
+                                      }
+                                      styleClasses={`bg-slate-500 bg-opacity-50 text-wrap w-full ${
+                                        String(item[key]).length > 50 &&
+                                        !isProductImageUrl(String(item[key]))
+                                          ? "h-24"
+                                          : "h-10 min-w-32"
+                                      }`}
+                                      variant={
+                                        String(item[key]).length > 50 &&
+                                        !isProductImageUrl(String(item[key]))
+                                          ? "text-area"
+                                          : "input"
+                                      }
                                     />
                                   </>
                                 ) : (
                                   <>
-                                    {(item[key] as string).startsWith(
-                                      "http"
-                                    ) ? (
+                                    {isProductImageUrl(String(item[key])) ? (
                                       <img
                                         src={item[key] as string}
                                         alt={item["name" as keyof T] as string}

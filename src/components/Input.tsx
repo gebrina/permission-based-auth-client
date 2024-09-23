@@ -6,11 +6,12 @@ type TInputProps = {
   label?: string;
   name?: string;
   type?: string;
+  variant?: "text-area" | "input";
   placeholder?: string;
   styleClasses?: string;
   errorMessage?: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: (event: FocusEvent<HTMLInputElement, HTMLElement>) => void;
+  onChange: <T>(event: ChangeEvent<T>) => void;
+  onBlur?: <T>(event: FocusEvent<T, HTMLElement>) => void;
 };
 
 export const Input: FC<TInputProps> = ({
@@ -19,6 +20,7 @@ export const Input: FC<TInputProps> = ({
   name,
   type,
   placeholder,
+  variant = "input",
   errorMessage,
   styleClasses,
   onChange,
@@ -33,18 +35,32 @@ export const Input: FC<TInputProps> = ({
 
   return (
     <div className="flex flex-col gap-2  text-lg relative">
-      <label htmlFor={inputId}>{label}</label>
-      <input
-        autoComplete="off"
-        defaultValue={defaultValue}
-        placeholder={placeholder}
-        className={classnames}
-        id={inputId}
-        type={type}
-        name={name}
-        onChange={onChange}
-        onBlur={onBlur}
-      />
+      {label && <label htmlFor={inputId}>{label}</label>}
+      {variant === "input" ? (
+        <input
+          autoComplete="off"
+          defaultValue={defaultValue}
+          placeholder={placeholder}
+          className={classnames}
+          id={inputId}
+          type={type}
+          name={name}
+          onChange={onChange}
+          onBlur={onBlur}
+        />
+      ) : (
+        <textarea
+          autoComplete="off"
+          defaultValue={defaultValue}
+          placeholder={placeholder}
+          className={`${classnames}`}
+          id={inputId}
+          name={name}
+          onChange={onChange}
+          onBlur={onBlur}
+        />
+      )}
+
       <p className="absolute text-red-500 right-0 top-3 text-sm">
         {errorMessage}
       </p>

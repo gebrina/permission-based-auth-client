@@ -22,6 +22,7 @@ export const CreateAccount = () => {
       },
     }
   );
+
   return (
     <div
       className="xl:w-1/2 mx-auto bg-gradient-to-tl rounded-lg 
