@@ -6,7 +6,9 @@ type TLoaderProps = {
 
 export const Loader: FC<TLoaderProps> = ({ classStyles }) => {
   return (
-    <div className={`${classStyles}  w-1/2 mx-auto flex justify-center h-full`}>
+    <div
+      className={`${classStyles}  w-1/2 mx-auto flex justify-center h-1/2 items-center`}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="3em"

@@ -56,9 +56,6 @@ export const Users = () => {
     error && setNotification({ type: "error", message: error.message });
   }, [error]);
 
-  if (isLoading)
-    return <Loader classStyles="absolute  left-[25%]  top-[25%]" />;
-
   const handleDelete = (rowId: string) =>
     mutate(rowId, {
       onSuccess: async () => {
@@ -77,6 +74,7 @@ export const Users = () => {
       {notification && (
         <Notification type={notification.type} message={notification.message} />
       )}
+      {isLoading && <Loader />}
       {!!users && (
         <Table
           filter={{

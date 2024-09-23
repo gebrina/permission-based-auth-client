@@ -232,7 +232,7 @@ export function Table<T extends { id: string }>({
             triggerId="column-options"
             hideOnSelection={false}
             onSelect={handleColumnOptionsSelect}
-            styleClass="max-w-36"
+            styleClass="w-max max-w-44"
           />
         </div>
 

@@ -128,7 +128,7 @@ export const Select: FC<TSelectProps> = ({
                 <div
                   onClick={() => handleSelect({ value, label })}
                   className={` ${
-                    icon && " flex justify-start items-center gap-2"
+                    icon && "flex justify-start items-center gap-2"
                   }
                   cursor-pointer hover:bg-orange-700 p-2 ${
                     index === options.length - 1 && "rounded-b-lg"
