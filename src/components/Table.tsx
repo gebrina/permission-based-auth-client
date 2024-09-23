@@ -318,9 +318,21 @@ export function Table<T extends { id: string }>({
                                     />
                                   </>
                                 ) : (
-                                  <span className="truncate">
-                                    {item[key] as ReactNode}
-                                  </span>
+                                  <>
+                                    {(item[key] as string).startsWith(
+                                      "http"
+                                    ) ? (
+                                      <img
+                                        src={item[key] as string}
+                                        alt={item["name" as keyof T] as string}
+                                        className="h-12 w-full rounded-lg shadow-md"
+                                      />
+                                    ) : (
+                                      <span className="line-clamp-1 min-w-48">
+                                        {item[key] as ReactNode}
+                                      </span>
+                                    )}
+                                  </>
                                 )}
                               </td>
                             )}
