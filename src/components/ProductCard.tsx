@@ -13,18 +13,11 @@ export const ProductCard: FC<Product> = ({
   const imgRef = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
-    let imageLoadTimeout: ReturnType<typeof setTimeout>;
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         const img = entry.target as HTMLImageElement;
         const loadedImageUrl = img.getAttribute("data-src")!;
         img.src = loadedImageUrl;
-        imageLoadTimeout && clearTimeout(imageLoadTimeout);
-        // wait until image is full loaded
-        imageLoadTimeout = setTimeout(() => {
-          img.classList.remove("animate-pulse");
-          img.style.filter = "blur(0)";
-        }, 50);
         observer.disconnect();
       });
     });
@@ -38,6 +31,12 @@ export const ProductCard: FC<Product> = ({
         <img
           ref={imgRef}
           loading="lazy"
+          onLoad={(e) =>
+            (e.target as HTMLImageElement).classList.remove(
+              "animate-pulse",
+              "blur-lg"
+            )
+          }
           className="h-1/2 blur-lg animate-pulse  sm:h-full object-cover mix-blend-difference aspect-square rounded-lg"
           src={placeholderImage}
           data-src={image}
