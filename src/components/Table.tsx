@@ -4,6 +4,7 @@ import {
   ReactElement,
   ReactNode,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import CancelIcon from "../assets/cancel.svg";
@@ -11,6 +12,7 @@ import UpdateIcon from "../assets/check.svg";
 import ColumnIcon from "../assets/column.svg";
 import DeleteIcon from "../assets/delete.svg";
 import EditIcon from "../assets/edit.svg";
+import PlaceholderImg from "../assets/placeholder.jpeg";
 import PlusIcon from "../assets/plus.svg";
 import SaveIcon from "../assets/save.svg";
 import { isMobile, isProductImageUrl, toLower, wait } from "../utils";
@@ -89,10 +91,38 @@ export function Table<T extends { id: string }>({
 
   const [filteredData, setFilteredData] = useState(defaultData);
   const [currentPage, setCurrentPage] = useState(1);
-
   const [shownColumns, setShownColumns] = useState(columns);
   const [showActionsColumn, setShowActionsColumn] = useState(true);
   const [addRow, setAddRow] = useState(false);
+
+  const productImageRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const productImages = document.querySelectorAll(
+      "img[data-product_img='true']"
+    )!;
+
+    const observer = new IntersectionObserver((entires) => {
+      entires.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const img = entry.target as HTMLImageElement;
+          const imgUrl = img.getAttribute("data-src");
+          if (imgUrl) {
+            img.src = imgUrl;
+          }
+        }
+      });
+    });
+    productImages.forEach((img) => {
+      observer.observe(img);
+    });
+
+    return () => {
+      productImages.forEach((img) => {
+        observer.unobserve(img);
+      });
+    };
+  }, [currentPage]);
 
   useEffect(() => {
     // update table data if there is any subsequent change on the data
@@ -345,9 +375,18 @@ export function Table<T extends { id: string }>({
                                   <>
                                     {isProductImageUrl(String(item[key])) ? (
                                       <img
-                                        src={item[key] as string}
+                                        ref={productImageRef}
+                                        loading="lazy"
+                                        onLoad={(e) =>
+                                          (
+                                            e.target as HTMLImageElement
+                                          ).classList.remove("blur-sm")
+                                        }
+                                        data-product_img={true}
+                                        data-src={item[key]}
+                                        src={PlaceholderImg}
                                         alt={item["name" as keyof T] as string}
-                                        className="h-12 w-full rounded-lg shadow-md"
+                                        className="w-8 lg:w-10 aspect-square blur-sm rounded-lg shadow-md"
                                       />
                                     ) : (
                                       <span className="line-clamp-1 min-w-48">
