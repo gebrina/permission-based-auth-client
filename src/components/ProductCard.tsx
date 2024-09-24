@@ -18,11 +18,11 @@ export const ProductCard: FC<Product> = ({
         const img = entry.target as HTMLImageElement;
         const loadedImageUrl = img.getAttribute("data-src")!;
         img.src = loadedImageUrl;
-        observer.disconnect();
       });
     });
 
     imgRef.current && observer.observe(imgRef.current);
+    return () => observer.disconnect();
   }, []);
 
   return (
