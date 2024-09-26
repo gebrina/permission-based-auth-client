@@ -1,6 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { getAll } from "../../api/Requests";
 import {
   Loader,
   Notification,
@@ -9,14 +7,11 @@ import {
   TNotification,
 } from "../../components";
 import { Header } from "../../components/Header";
-import { GET_ALL_PRODUCTS_KEY } from "../../constants/QueryKeys";
+import { useProducts } from "../../hooks/useProducts";
 import { Product } from "../../types";
 
 export const Products = () => {
-  const { isLoading, error, data } = useQuery({
-    queryKey: [GET_ALL_PRODUCTS_KEY],
-    queryFn: () => getAll<Product>("products"),
-  });
+  const { isLoading, error, data } = useProducts();
 
   const [notification, setNotification] = useState<TNotification>();
 

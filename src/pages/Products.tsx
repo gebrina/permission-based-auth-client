@@ -1,15 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-import { getAll } from "../api/Requests";
 import { Loader, Notification, ProductCard } from "../components";
-import { GET_ALL_PRODUCTS_KEY } from "../constants/QueryKeys";
-import { Product } from "../types";
+import { useProducts } from "../hooks/useProducts";
 
 export const Products = () => {
-  const { isLoading, error, data } = useQuery({
-    queryKey: [GET_ALL_PRODUCTS_KEY],
-    queryFn: () => getAll<Product>("products"),
-  });
-
+  const { isLoading, error, data } = useProducts();
   if (isLoading) return <Loader />;
 
   return (
