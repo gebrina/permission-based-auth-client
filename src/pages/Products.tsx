@@ -3,6 +3,7 @@ import { useProducts } from "../hooks/useProducts";
 
 export const Products = () => {
   const { isLoading, error, data } = useProducts();
+
   if (isLoading) return <Loader />;
 
   return (

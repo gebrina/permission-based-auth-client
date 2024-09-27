@@ -12,7 +12,6 @@ import { Product } from "../../types";
 
 export const Products = () => {
   const { isLoading, error, data } = useProducts();
-
   const [notification, setNotification] = useState<TNotification>();
 
   useEffect(() => {

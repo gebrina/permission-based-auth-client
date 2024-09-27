@@ -4,7 +4,6 @@ import {
   ReactElement,
   ReactNode,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import CancelIcon from "../assets/cancel.svg";
@@ -95,8 +94,6 @@ export function Table<T extends { id: string }>({
   const [showActionsColumn, setShowActionsColumn] = useState(true);
   const [addRow, setAddRow] = useState(false);
 
-  const productImageRef = useRef<HTMLImageElement>(null);
-
   useEffect(() => {
     const productImages = document.querySelectorAll(
       "img[data-product_img='true']"
@@ -122,7 +119,7 @@ export function Table<T extends { id: string }>({
         observer.unobserve(img);
       });
     };
-  }, [currentPage]);
+  }, [currentPage, rowData]);
 
   useEffect(() => {
     // update table data if there is any subsequent change on the data
@@ -375,7 +372,6 @@ export function Table<T extends { id: string }>({
                                   <>
                                     {isProductImageUrl(String(item[key])) ? (
                                       <img
-                                        ref={productImageRef}
                                         loading="lazy"
                                         onLoad={(e) =>
                                           (
