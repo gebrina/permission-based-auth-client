@@ -7,11 +7,14 @@ import {
   TNotification,
 } from "../../components";
 import { Header } from "../../components/Header";
+import { useDeleteProduct } from "../../hooks/useDeleteProduct";
 import { useProducts } from "../../hooks/useProducts";
 import { Product } from "../../types";
 
 export const Products = () => {
-  const { isLoading, error, data } = useProducts();
+  const { isLoading, error, data, refetch } = useProducts();
+  const { mutate } = useDeleteProduct();
+
   const [notification, setNotification] = useState<TNotification>();
 
   useEffect(() => {
@@ -41,9 +44,23 @@ export const Products = () => {
     },
   ];
 
-  const handleDelete = (rowId: string) => {};
+  const handleDelete = (rowId: string) =>
+    mutate(rowId, {
+      onSuccess: () => {
+        setNotification({
+          type: "success",
+          message: "Product deleted successfully.",
+        });
+        refetch();
+      },
+      onError: (e) =>
+        setNotification({
+          type: "error",
+          message: e.message || "Something went wrong.",
+        }),
+    });
 
-  const handleEdit = (rowData: Product) => {};
+  const handleEdit = (rowData: Product) => console.table(rowData);
 
   return (
     <div className="h-full">
